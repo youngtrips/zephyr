@@ -19,15 +19,15 @@
 {% unless body_class %} {% assign body_class = 'default' %} {% endunless %}
 <body class="{{ body_class }}">
   <div id="wrapper">
-    {% include header.html %}
+    {% include 'header.html' %}
     <div id="main"> {{ content | expand_urls: root_url }} </div>
-    {% include footer.html %}
+    {% include 'footer.html' %}
   </div> <!-- #wrapper end -->
 
-  {% include external/google_analytics.html %}
-  {% include external/disqus.html %}
-  {% include external/facebook_like.html %}
-  {% include external/google_plus_one.html %}
-  {% include external/twitter_sharing.html %}
+  {% include 'external/google_analytics.html' %}
+  {% include 'external/disqus.html' %}
+  {% include 'external/facebook_like.html' %}
+  {% include 'external/google_plus_one.html' %}
+  {% include 'external/twitter_sharing.html' %}
 </body>
 </html>

@@ -3,13 +3,13 @@ layout: base
 single: true
 ---
 
-{% include article.html %}
+{% include 'article.html' %}
 
 <div class="post-single">
   <div class="post-meta">
-    {% include post/categories.html %}
+    {% include 'post/categories.html' %}
     {% unless page.sharing == false %}
-      {% include post/sharing.html %}
+      {% include 'post/sharing.html' %}
     {% endunless %}
   </div>
   <div class="clear"></div>

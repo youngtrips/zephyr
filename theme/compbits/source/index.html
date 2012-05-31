@@ -3,10 +3,10 @@ layout: base
 current: blog
 ---
 
-{% assign index = true %}
+{% set index = true %}
 {% for post in paginator.posts %}
   {% assign content = post.content %}
-  <div class="post"> {% include article.html %} </div>
+  <div class="post"> {% include 'article.html' %} </div>
 {% endfor %}
 
 <div id="pagination">
