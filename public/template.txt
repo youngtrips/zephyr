@@ -1,0 +1,9 @@
+index.html
+post.html
+category.html
+tag.html
+archives.html
+about.html
+page.html
+pagination.html
+

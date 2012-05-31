@@ -1,5 +1,5 @@
 <div id="header">
-  <h1><a href="{{ root_url }}/">{{ site.title }}</a></h1>
+  <h1><a href="{{ site.root }}/">{{ site.title }}</a></h1>
   {% if site.subtitle %}
     <p>{{ site.subtitle }}</p>
   {% endif %}
@@ -18,14 +18,14 @@
 <div class="clear"></div>
 <ul id="nav">
   {% if page.current == 'blog' %}
-    <li> <a href="{{ root_url }}/" class="current">blog</a> </li>
+    <li> <a href="{{ site.root }}/" class="current">blog</a> </li>
   {% else %}
-    <li> <a href="{{ root_url }}/">blog</a> </li>
+    <li> <a href="{{ site.root }}/">blog</a> </li>
   {% endif %}
 
   {% if page.current == 'archives' %}
-    <li><a href="{{ root_url }}/blog/archives" class="current">archives</a></li>
+    <li><a href="{{ site.root }}/blog/archives" class="current">archives</a></li>
   {% else %}
-    <li><a href="{{ root_url }}/blog/archives">archives</a></li>
+    <li><a href="{{ site.root }}/blog/archives">archives</a></li>
   {% endif %}
 </ul>

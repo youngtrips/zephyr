@@ -6,7 +6,7 @@
 # Description: 
 #
 
-site_path = "/home/tuz/workspace/zephyr/site"
+site_path = "/home/youngtrips/workspace/zephyr/site"
 
-html_path = "/home/tuz/workspace/zephyr/html"
+html_path = "/home/youngtrips/workspace/zephyr/html"
 
