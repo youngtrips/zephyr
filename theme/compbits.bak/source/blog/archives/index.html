@@ -1,0 +1,11 @@
+---
+layout: base
+title: Archives
+current: archives
+---
+
+<div id="archives">
+  {% for post in site.posts reverse %}
+    {% include archive_post.html %}
+  {% endfor %}
+</div>
