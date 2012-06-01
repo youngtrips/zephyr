@@ -1,19 +1,19 @@
 <%inherit file="base.html" />
 
     <div id="headline">
-		<h2>PostTitle</h2>
+		<h2>${post.title}</h2>
         
         <p class="post-data">
-            <span>Publish: date</span>
-            <span>Category: <a href="#">category</a></span>
-            <span class="no-border">Author: <a href="#">Author</a></span>
+            <span>Publish: ${post.date} ${post.time}</span>
+            <span>Category: <a href="${post.cate.url}">${post.cate.name}</a></span>
+            <span class="no-border">Author: <a href="${site.url}/about/">${site.author}</a></span>
         </p>
 	</div><!-- end #headline -->
 
 	<div class="span-18">
 		<div  id="main">
 		<div class="post">
-            <p> PostConent </p>
+            <p> ${post.content} </p>
 		</div>
 		<div id="comments">
             <p> Comments </p>

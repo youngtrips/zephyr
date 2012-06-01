@@ -2,25 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>SiteName &raquo; PageTitle</title>
+<title>${site.name} &raquo; ${page.title}</title>
 <meta name="description" content="description" />
-<link rel="stylesheet" href="screen.css" type="text/css" media="screen, projection" />
-<link rel="stylesheet" href="style.css" type="text/css" media="screen, projection" />
-<link rel="stylesheet" href="print.css" type="text/css" media="print" />
-<!--
-<link rel="shortcut icon" href="http://static.typecho.org/images/favicon.ico?v=1.0.6" type="image/x-icon" />
--->
+<link rel="stylesheet" href="${site.url}/stylesheets/screen.css" type="text/css" media="screen, projection" />
+<link rel="stylesheet" href="${site.url}/stylesheets/style.css" type="text/css" media="screen, projection" />
+<link rel="stylesheet" href="${site.url}/stylesheets/print.css" type="text/css" media="print" />
+<link rel="shortcut icon" href="${site.url}/favicon.ico" type="image/x-icon" />
 
 </head>
 <body><div class="container">
 <div class="span-24" id="header">
-	<h1 id="logo"><a href="http://typecho.org">Typecho</a></h1>
+	<h1 id="logo"><a href="${site.url}">${site.name}</a></h1>
     </div>
 <div class="span-24" id="nav-menu">
 	<ul class="clearfix">
-		<li><a href="#" >Home</a></li>
-		<li><a href="#" >Archives</a></li>
-		<li><a href="#" >About</a></li>
+		<li><a href="${site.url}" >Home</a></li>
+		<li><a href="${site.url}/archives/" >Archives</a></li>
+        % for page in site.pages:
+		    <li><a href="${page.url}" >${page.name}</a></li>
+        % endof
+		<li><a href="${site.url}/about/" >About</a></li>
 	</ul>
 </div>
 
