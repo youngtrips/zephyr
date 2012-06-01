@@ -27,7 +27,8 @@ site.pagelimit = 10
 site.pages = []
 site.categories = []
 site.posts = []
-
+site.enable_disqus = True
+site.disqus_shortname = "mindeden"
 
 page.title = "Home"
 page.name = "Home"
@@ -47,6 +48,7 @@ post.time = "10:55:02"
 post.cate = cate
 post.url = site.url + "/post/2012/06/01/welcome-to-mindeden/"
 post.content = "Welcome to MindEden, it's coming soon!!!"
+post.enable_comment = True
 
 
 page.title = post.title
