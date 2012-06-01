@@ -18,9 +18,9 @@
 	<ul class="clearfix">
 		<li><a href="${site.url}" >Home</a></li>
 		<li><a href="${site.url}/archives/" >Archives</a></li>
-        % for page in site.pages:
-		    <li><a href="${page.url}" >${page.name}</a></li>
-        % endof
+        % for pageinfo in site.pages:
+		    <li><a href="${pageinfo.url}" >${pageinfo.name}</a></li>
+        % endfor
 		<li><a href="${site.url}/about/" >About</a></li>
 	</ul>
 </div>
