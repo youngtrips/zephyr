@@ -1,9 +1,12 @@
 [site]
-name = "MindEden"
-description = "Somewhere to keep my idears"
+name = MindEden
+description = Somewhere to keep my idears
+url = http://mindeden.com
+keywords = 
+pagelimit = 10
 
 
 [author]
-name = "Tuz"
-email = "youngtrips@gmail.com"
+name = Tuz
+email = youngtrips@gmail.com
 

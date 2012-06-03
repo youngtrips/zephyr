@@ -6,25 +6,44 @@
 # Description: 
 #
 
-class Post(object):
-    def __init__(self):
-        pass
-
-
-class Category(object):
-    def __init__(self):
-        pass
-
-
-class Tag(object):
-    def __init__(self):
-        pass
-
-class Site(object):
-    def __init__(self):
-        pass
-
 class Node(object):
-    def __init__(self):
+    def __init__(self, name, url):
+        object.__init__(self)
+        self.name = name
+        self.url = url
+
+    def generate(self):
         pass
+
+
+class Post(Node):
+    def __init__(self, title, date, author, content, category, tags, url):
+        Node.__init__(self, title, url)
+        self.title = title
+        self.date = date
+        self.author = author
+        self.content = content
+        self.category = category
+        self.tags = tags
+
+
+class Category(Node):
+    def __init__(self, name, url):
+        Node.__init__(self, name, url)
+
+
+
+class Tag(Node):
+    def __init__(self, name, url):
+        Node.__init__(self, name, url)
+
+
+class Site(Node):
+    def __init__(self, name, base_url):
+        Node.__init__(self, name, base_url)
+        self.posts = []
+        self.categoris = dict()
+        self.tags = dict()
+
+
 
