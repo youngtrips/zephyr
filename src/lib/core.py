@@ -123,7 +123,8 @@ def init_sketch_path(path):
     
     # init sketch path
     zephyr_path = os.path.join(path, ".zephyr")
-    os.mkdir(zephyr_path)
+    if not os.path.exists(zephyr_path):
+        os.mkdir(zephyr_path)
     
     # copy template config
     src_config = 'template/config'
@@ -134,4 +135,9 @@ def init_sketch_path(path):
     src_themes = 'themes'
     dst_themes = os.path.join(zephyr_path, 'themes')
     shutil.copytree(src_themes, dst_themes)
+
+    # mkdir site entites
+    src_html = 'template/html'
+    dst_html = os.path.join(zephyr_path, 'html')
+    shutil.copytree(src_html, dst_html)
 

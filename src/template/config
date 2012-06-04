@@ -2,11 +2,17 @@
 name = MindEden
 description = Somewhere to keep my idears
 url = http://mindeden.com
-keywords = 
+keywords = codedelight mindeden linux
 pagelimit = 10
+theme = default
 
 
 [author]
 name = Tuz
 email = youngtrips@gmail.com
+
+[repo]
+vps_repo = git@mindeden:/home/git/repo/mindeden.com.git
+
+[sync]
 
