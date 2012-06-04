@@ -45,11 +45,10 @@ class CommandHandler(object):
         print 'public'
 
     def newpost(self, argv):
-        print 'newpost'
+        core.new_sketch(argv)
 
     def newpage(self, argv):
         print 'newpage'
-
 
 def main():
     if len(sys.argv) == 1:
