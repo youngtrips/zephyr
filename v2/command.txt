@@ -1,0 +1,12 @@
+zephyr init [path]
+zephyr config  [option]
+zephyr repo add
+zephyr repo del
+zephyr sync add
+zephyr sync del
+zephyr public
+zephyr newpost title [path]
+zephyr newpage name [path]
+
+
+
