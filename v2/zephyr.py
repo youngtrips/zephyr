@@ -70,14 +70,13 @@ class Site(object):
         self.posts = []
         self.categores = dict()
         self.tags = dict()
+        self.root_path = ''
 
     def scan_sketches(self):
         pass
 
     def publish(self):
         pass
-
-        
 
 
 
