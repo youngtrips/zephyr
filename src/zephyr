@@ -41,8 +41,8 @@ class CommandHandler(object):
     def sync(self, argv):
         print 'sync'
 
-    def public(self, argv):
-        print 'public'
+    def publish(self, argv):
+        core.publish(argv)
 
     def newpost(self, argv):
         core.new_sketch(argv)

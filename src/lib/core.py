@@ -165,6 +165,11 @@ def new_sketch(argv):
         category = options.category
     if options.tags:
         tags = options.tags.split()
+    zephyr_path = os.path.join(sketch_path, ".zephyr")
+    if not os.path.exists(zephyr_path):
+        print 'Not a sketch path'
+        sys.exit()
+
     date = time.strftime('%Y-%m-%d %H:%M:%S')
     sketch_name = date.split()[0] + '-' + title + '.md'
     sketch_path = os.path.join(sketch_path, sketch_name)
@@ -183,4 +188,15 @@ def new_sketch(argv):
     handle.write(sketch_header)
     handle.close()
     print 'create sketch [%s].' % (sketch_path)
+
+
+def publish(argv):
+    path = os.getcwd()
+    if len(argv) == 1:
+        path = argv[0]
+    zephyr_path = os.path.join(path, ".zephyr")
+    if not os.path.exists(zephyr_path):
+        print 'Not a sketch path'
+        sys.exit()
+    print 'publish %s' % (path)
 
