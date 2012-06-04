@@ -86,33 +86,40 @@ class Config(object):
         pass
 
 class Site(Node):
-    def __init__(self, config):
+    def __init__(self, root_path):
         Node.__init__(self, '')
+        self.root_path = root_path
         self.config = None
         self.posts = []
         self.categores = dict()
         self.tags = dict()
-        self.root_path = ''
 
     def generate(self):
         pass
 
-    def scan_sketches(self):
+    def publish(self):
+        self._load_config()
+        self._load_theme()
+        self._load_posts()
+
+    def _load_config(self):
+        config_path = os.path.join(self.root_path, '.zephyr')
+        config_path = os.path.join(config_path, 'config')
+        print config_path
+
+    def _load_theme(self):
         pass
 
-    def publish(self):
-        for post in self.posts:
-            post.generate()
+    def _load_posts(self):
+        for root, dirs, files in os.walk(self.root_path):
+            if '.zephyr' in dirs:
+                dirs.remove('.zephyr')
+            for shortname in files:
+                fullname = os.path.join(self.root_path, shortname)
+                self._parse_post(shortname, fullname)
 
-        for key in self.categores.keys():
-            cate = self.categores[key]
-            cate.generate()
-
-        for key in self.tags.keys():
-            tag = self.tags[key]
-            tag.generate()
-        self.generate()
-
+    def _parse_post(self, shortname, fullname):
+        print (shortname, fullname)
 
 def init_sketch_path(path):
     if not os.path.exists(path):
@@ -199,4 +206,6 @@ def publish(argv):
         print 'Not a sketch path'
         sys.exit()
     print 'publish %s' % (path)
+    site = Site(path)
+    site.publish()
 
