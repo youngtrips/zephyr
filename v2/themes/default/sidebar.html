@@ -1,0 +1,8 @@
+		<div class="sub-menu">
+			<h4>Categories</h4>
+			<ul>
+                % for cate in site.categories:
+				    <li><a href="${cate.url}">${cate.name}</a></li>
+                % endfor
+			</ul>
+		</div>

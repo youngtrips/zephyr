@@ -9,6 +9,9 @@
 import markdown
 import mako
 import yaml
+import sys
+import os
+import shutil
 
 class Node(object):
     def __init__(self, url):
@@ -110,15 +113,25 @@ class Site(Node):
         self.generate()
 
 
-from optparse import OptionParser
-if __name__ == "__main__":
-    parser = OptionParser()
-    parser.add_option("-i", "--init", dest="sketch_path",
-                      help="initialize path for sketches")
-    parser.add_option("-p", "--published",
-                  action="store_false", dest="verbose", default=True,
-                  help="don't print status messages to stdout")
+def init_sketch_path(path):
+    if not os.path.exists(path):
+        try:
+            os.mkdir(path)
+        except:
+            print 'mkdir %s failed' % (path)
+            sys.exit()
+    
+    # init sketch path
+    zephyr_path = os.path.join(path, ".zephyr")
+    os.mkdir(zephyr_path)
+    
+    # copy template config
+    src_config = 'template/config'
+    dst_config = os.path.join(zephyr_path, 'config')
+    shutil.copy(src_config, dst_config)
 
-    (options, args) = parser.parse_args()
-
+    # copy themes
+    src_themes = 'themes'
+    dst_themes = os.path.join(zephyr_path, 'themes')
+    shutil.copytree(src_themes, dst_themes)
 

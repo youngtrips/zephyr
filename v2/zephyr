@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+#-*- coding: utf-8 -*-
+
+# Author: youngtrips(youngtrips@gmail.com)
+# Created Time:  2012-06-04
+# File Name: zephyr
+# Description: 
+#
+
+from lib import core
+import sys
+import os
+
+def usage():
+    print 'Usage: %s [--version] [--help] command [args]' % (sys.argv[0])
+
+class CommandHandler(object):
+    def __init__(self):
+        object.__init__(self)
+
+    def init(self, argv):
+        path = ''
+        if len(argv) == 0:
+            path = os.getcwd()
+        elif len(argv) == 1:
+            path = argv[0]
+        else:
+            usage()
+        print '%s init %s' % (sys.argv[0], path)
+        core.init_sketch_path(path)
+
+    def config(self, argv):
+        print 'config'
+    
+    def repo(self, argv):
+        print 'repo'
+
+    def sync(self, argv):
+        print 'sync'
+
+    def sync(self, argv):
+        print 'sync'
+
+    def public(self, argv):
+        print 'public'
+
+    def newpost(self, argv):
+        print 'newpost'
+
+    def newpage(self, argv):
+        print 'newpage'
+
+
+def main():
+    if len(sys.argv) == 1:
+        usage()
+        sys.exit()
+    argv = sys.argv[1:]
+    cmd_handler = CommandHandler()
+    func = getattr(cmd_handler, argv[0])
+    if func:
+        func(argv[1:])
+    else:
+        usage()
+
+if __name__ == "__main__":
+    main()
+

@@ -1,0 +1,32 @@
+<%inherit file="base.html" />
+
+<div  id="main">
+
+    % for post in site.posts[0: site.pagelimit]:
+        <div class="post">
+            <h3 class="post-title"><a href="${post.url}">${post.title}</a></h3>
+                <p class="post-data">
+				    <span>Publish: ${post.date} ${post.time}</span>
+				    <span>Category: <a href="${post.cate.url}">${post.cate.name}</a></span>
+				    <span>Author: <a href="${site.url}/about/">${site.author}</a></span>
+                    <!--
+				    <span class="no-border"><a href="#">Comments</a></span>
+                    -->
+			    </p>
+                <p>${post.content}</p>
+                <p class="more"><a href="${post.url}" title="Its about time">Continue Reading ...</a></p>
+        </div>
+    % endfor
+
+    <ul class="pages">
+        <li class="current"><a href="#">1</a></li>
+        <li><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li>...</li>
+        <li><a href="#">7</a>
+        </li><li>
+        <a class="next" href="#">NEXT &raquo;</a></li>
+    </ul>
+</div>
+
