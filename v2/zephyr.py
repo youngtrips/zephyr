@@ -6,11 +6,22 @@
 # Description: 
 #
 
+import markdown
+import mako
+import yaml
 
-class Post(object):
-    def __init__(self, title, date, content, author, category, tags,
-                 comment=True, publish=True):
+class Node(object):
+    def __init__(self, url):
         object.__init__(self)
+        self.url = url
+
+    def generate(self):
+        pass
+
+class Post(Node):
+    def __init__(self, title, date, content, author, category, tags,
+                 comment=True, publish=True, url=''):
+        Node.__init__(self, url)
         self.title = title
         self.date = date
         self.content = content
@@ -19,7 +30,6 @@ class Post(object):
         self.tags = tags
         self.comment = comment
         self.publish = publish
-        self.url = ''
 
     def __cmp__(self, other):
         pass
@@ -30,24 +40,32 @@ class Post(object):
     def set_url(self, url):
         self.url = url
 
+    def generate(self):
+        pass
 
-class Category(object):
-    def __init__(self, name):
-        object.__init__(self)
+class Category(Node):
+    def __init__(self, name, url=''):
+        Node.__init__(self, url)
         self.name = name
         self.posts = dict()
 
     def add_post(self, post):
         self.posts[post.url] = post
 
-class Tag(object):
-    def __init__(self, name):
-        object.__init__(self)
+    def generate(self):
+        pass
+
+class Tag(Node):
+    def __init__(self, name, url=''):
+        Node.__init__(self, url)
         self.naem = name
         self.posts = dict()
     
     def add_post(self, post):
         self.posts[post.url] = post
+
+    def generate(self):
+        pass
 
 class Author(object):
     def __init__(self, name, mail):
@@ -63,23 +81,33 @@ class Config(object):
     def _parse(self, conf):
         pass
 
-class Site(object):
+class Site(Node):
     def __init__(self, config):
-        object.__init__(self)
+        Node.__init__(self, '')
         self.config = None
         self.posts = []
         self.categores = dict()
         self.tags = dict()
         self.root_path = ''
 
+    def generate(self):
+        pass
+
     def scan_sketches(self):
         pass
 
     def publish(self):
-        pass
+        for post in self.posts:
+            post.generate()
 
+        for key in self.categores.keys():
+            cate = self.categores[key]
+            cate.generate()
 
-
+        for key in self.tags.keys():
+            tag = self.tags[key]
+            tag.generate()
+        self.generate()
 
 
 from optparse import OptionParser
@@ -92,6 +120,5 @@ if __name__ == "__main__":
                   help="don't print status messages to stdout")
 
     (options, args) = parser.parse_args()
-
 
 
