@@ -37,6 +37,7 @@ class Post(Node):
         self.publish = publish
         self.layout = 'post'
         self.render = None
+        self.path = None
 
     def __cmp__(self, other):
         pass
@@ -54,10 +55,14 @@ class Post(Node):
         class Foo:
             pass
         page = Foo()
+
         page.title = self.title
         page.name = self.name
         page.url = self.url
         html = self._render(site, page)
+        handle = open(self.path, 'w')
+        handle.write(html)
+        handle.close()
 
     @staticmethod
     def parse(shortname, fullname):
