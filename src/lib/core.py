@@ -38,6 +38,22 @@ class Post(Node):
         self.publish = publish
         self.layout = layout
         self.path = os.path.join('/'.join(date.split('-')), title)
+
+
+        """
+        self.title
+        self.date
+        self.time
+        self.content
+        self.author
+        self.cate
+        self.tags = []
+        self.comments
+        self.layout
+        self.url
+        self.enable_comment
+        """
+
         class Foo:
             pass
         self.cate = Foo()
@@ -170,6 +186,17 @@ class Site(Node):
         self.disqus_shortname = 'mindeden'
         self.base_url = ''
         self.base_path = ''
+        """
+        site.name
+        site.author
+        site.url
+        site.pagelimit
+        site.pages = []
+        site.categories = []
+        site.posts = []
+        site.enable_disqus = True
+        site.disqus_shortname
+        """
 
     def generate(self):
         for post in self.posts:
