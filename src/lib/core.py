@@ -29,6 +29,7 @@ class Post(Node):
         Node.__init__(self, url)
         self.title = title
         self.date = date
+        self.time = '00:00:00'
         self.content = content
         self.author = author
         self.category = category
@@ -37,6 +38,12 @@ class Post(Node):
         self.publish = publish
         self.layout = layout
         self.path = os.path.join('/'.join(date.split('-')), title)
+        class Foo:
+            pass
+        self.cate = Foo()
+        self.cate.name = 'default'
+        self.cate.url = '/categories/default'
+        self.enable_comment = True
         print self.path
 
     def __cmp__(self, other):
@@ -49,7 +56,7 @@ class Post(Node):
         self.url = url
 
     def _render(self, site, page):
-        return self.layout.render(site=siet,page=page,post=self)
+        return self.layout.render(site=site,page=page,post=self)
 
     def generate(self, site):
         class Foo:
@@ -62,7 +69,7 @@ class Post(Node):
         html = self._render(site, page)
 
         #generate html file
-        itmes = self.date.split('-')
+        items = self.date.split('-')
         items.append(self.title)
         path = os.path.join(site.root_path, '.zephyr')
         path = os.path.join(path, 'html')
@@ -98,13 +105,11 @@ class Post(Node):
         header = yaml.load(header)
 
         content = markdown.markdown(content)
-        print content
         items = os.path.splitext(shortname)[0].split('-')
         date = '-'.join(items[0:3])
         title = '-'.join(items[3:])
 
-        layout = site.layout_lookup.get_template('post')
-        print layout
+        layout = site.layout_lookup.get_template('post.html')
 
         post = Post(title, date, content, 'Tuz', header['category'], header['tags'], layout)
         return post
@@ -154,9 +159,15 @@ class Site(Node):
         self.root_path = root_path
         self.config = None
         self.posts = []
-        self.categores = dict()
+        self.categories = dict()
         self.tags = dict()
         self.layout_lookup = None
+        self.name = 'MindEden'
+        self.pages = []
+        self.author = 'Tuz'
+        self.enable_disqus = True
+        self.enable_comment = True
+        self.disqus_shortname = 'mindeden'
 
     def generate(self):
         for post in self.posts:
