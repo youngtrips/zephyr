@@ -1,12 +1,7 @@
-zephyr init [path]
-zephyr config  [option]
-zephyr repo add
-zephyr repo del
-zephyr sync add
-zephyr sync del
-zephyr public
-zephyr newpost title [path]
-zephyr newpage name [path]
-
+zephyr init [--path=PATH] [--theme=THEME]
+zephyr public [--path=PATH]
+zephyr newpost postname [--path=PATH] [--title=TITLE] [--category=CATE]
+zephyr newpage pagename [--path=PATH]
+zephyr [--help]
 
 

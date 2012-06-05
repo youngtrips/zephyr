@@ -2,66 +2,104 @@
 #-*- coding: utf-8 -*-
 
 # Author: youngtrips(youngtrips@gmail.com)
-# Created Time:  2012-06-04
-# File Name: zephyr
+# Created Time:  2012-06-05
+# File Name: test.py
 # Description: 
 #
 
 from lib import core
+import cmdln
 import sys
 import os
 
-def usage():
-    print 'Usage: %s [--version] [--help] command [args]' % (sys.argv[0])
+class Zephyr(cmdln.Cmdln):
+    """Usage:
+        zephyr command [args...]
+        zephyr help command
 
-class CommandHandler(object):
-    def __init__(self):
-        object.__init__(self)
+    ${command_list}
+    ${help_list}
+    """
+    name = "zephyr"
 
-    def init(self, argv):
+    def __init__(self, *args, **kwargs):
+        cmdln.Cmdln.__init__(self, *args, **kwargs)
+        cmdln.Cmdln.do_help.aliases.append("h")
+
+
+    @cmdln.option("-t", "--theme",
+                  help="choose a theme for blog")
+    def do_init(self, subcmd, opts, *args):
+        """Initialize blog path.
+
+        usage:
+            init PATH...
+        ${cmd_option_list}
+        """
         path = ''
-        if len(argv) == 0:
+        if len(args) == 0:
             path = os.getcwd()
-        elif len(argv) == 1:
-            path = argv[0]
+        elif len(args) == 1:
+            path = args[0]
         else:
-            usage()
-        print '%s init %s' % (sys.argv[0], path)
+            print 'invalid path'
+            return
+        theme = 'default'
+        if opts.theme:
+            theme = opts.theme
+        #print theme, path
         core.init_sketch_path(path)
 
-    def config(self, argv):
-        print 'config'
-    
-    def repo(self, argv):
-        print 'repo'
+    @cmdln.option("-p", "--path",
+                  help="set blog path")
+    @cmdln.option("-t", "--title",
+                  help="Set display title for post")
+    def do_newpost(self, subcmd, opts, *args):
+        """Create a new postfile with Markdown format.
 
-    def sync(self, argv):
-        print 'sync'
+        usage:
+            newpost POSTNAME [--path=PATH] [--title=TITLE]
+        ${cmd_option_list}
+        """
 
-    def sync(self, argv):
-        print 'sync'
+        if len(args) != 1:
+            return
+        postname = args[0]
+        title = ''
+        if opts.title:
+            title = opts.title
+        path = os.getcwd()
+        if opts.path:
+            path = opts.path
+        core.new_post(postname, title, path)
 
-    def publish(self, argv):
-        core.publish(argv)
+    @cmdln.option("-p", "--path",
+                  help="Set blog path")
+    def do_newpage(self, subcmd, opts, *args):
+        """Create a new page.
 
-    def newpost(self, argv):
-        core.new_sketch(argv)
+        usage:
+            newpage pagename [--path=PATH]
+        ${cmd_option_list}
+        """
 
-    def newpage(self, argv):
-        print 'newpage'
+        print "'zephyr %s' opts: %s" % (subcmd, opts)
+        print "'zephyr %s' args: %s" % (subcmd, args)
 
-def main():
-    if len(sys.argv) == 1:
-        usage()
-        sys.exit()
-    argv = sys.argv[1:]
-    cmd_handler = CommandHandler()
-    func = getattr(cmd_handler, argv[0])
-    if func:
-        func(argv[1:])
-    else:
-        usage()
+    @cmdln.option("-p", "--path",
+                  help="Set blog path")
+    def do_publish(self, subcmd, opts, *args):
+        """Publish your posts
+
+        usage:
+            publish [--path=PATH]
+        {$cmd_option_list}
+        """
+        print "'zephyr %s' opts: %s" % (subcmd, opts)
+        print "'zephyr %s' args: %s" % (subcmd, args)
+
 
 if __name__ == "__main__":
-    main()
+    zephyr = Zephyr()
+    sys.exit(zephyr.main())
 

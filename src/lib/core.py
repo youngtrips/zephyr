@@ -307,39 +307,16 @@ def init_sketch_path(path):
 
 from optparse import OptionParser
 
-def new_sketch(argv):
-    if len(argv) == 0:
-        sys.exit()
-    parser = OptionParser()
-    parser.add_option('-p', '--path', dest='sketch_path',
-                      help='Create a new sketch in PATH',  metavar="PATH")
-    parser.add_option('-c', '--category', dest='category',
-                      help='category for sketch')
-    parser.add_option('-t', '--tags', dest='tags',
-                      help='tags for sketch')
-    (options, args) = parser.parse_args(argv)
-    sketch_path = options.sketch_path
-    title = args[0]
+def new_post(postname, title, path):
     category = ''
-    tags = []
-    if sketch_path == None:
-        sketch_path = os.getcwd()
-    if options.category:
-        category = options.category
-    if options.tags:
-        tags = options.tags.split()
-    zephyr_path = os.path.join(sketch_path, ".zephyr")
-    if not os.path.exists(zephyr_path):
-        print 'Not a sketch path'
-        sys.exit()
-
+    tags = ''
     date = time.strftime('%Y-%m-%d %H:%M:%S')
-    sketch_name = date.split()[0] + '-' + title + '.md'
-    sketch_path = os.path.join(sketch_path, sketch_name)
+    path = os.path.join(path, date.split()[0] + '-' + postname + '.md')
     sketch_header = ''
     sketch_header += '---\n'
     sketch_header += 'layout: post\n'
-    sketch_header += 'title: \n'
+    sketch_header += 'title: %s\n' % title
+    sketch_header += 'date: %s\n' % date
     sketch_header += 'category: %s\n' % (category)
     if len(tags) > 0:
         sketch_header += 'tags: [' + ','.join(tags) + ']\n'
@@ -347,11 +324,10 @@ def new_sketch(argv):
         sketch_header += 'tags: \n'
     sketch_header += '---\n'
     sketch_header += '\n'
-    handle = open(sketch_path, 'w')
+    handle = open(path, 'w')
     handle.write(sketch_header)
     handle.close()
-    print 'create sketch [%s].' % (sketch_path)
-
+    print 'create new post [%s].' % (path)
 
 def publish(argv):
     path = os.getcwd()
