@@ -6,8 +6,9 @@
 # Description: 
 #
 
+from mako.template import Template
+from mako.lookup import TemplateLookup
 import markdown
-import mako
 import yaml
 import sys
 import os
@@ -34,6 +35,8 @@ class Post(Node):
         self.tags = tags
         self.comment = comment
         self.publish = publish
+        self.layout = 'post'
+        self.render = None
 
     def __cmp__(self, other):
         pass
@@ -44,8 +47,40 @@ class Post(Node):
     def set_url(self, url):
         self.url = url
 
-    def generate(self):
+    def _render(self, site, page):
         pass
+
+    def generate(self, site):
+        class Foo:
+            pass
+        page = Foo()
+        page.title = self.title
+        page.name = self.name
+        page.url = self.url
+        html = self._render(site, page)
+
+    @staticmethod
+    def parse(shortname, fullname):
+        if not os.path.exists(fullname):
+            return None
+        content = ''
+        try:
+            import codecs
+            handle = codecs.open(fullname, mode="r", encoding="utf-8")
+            content = handle.read()
+            handle.close()
+        except:
+            return None
+        HEADER_SEP = '---\n'
+
+        pos = content.find(HEADER_SEP) + len(HEADER_SEP)
+        content = content[pos:]
+        pos = content.find(HEADER_SEP)
+        header = content[0:pos]
+        content = content[pos + len(HEADER_SEP):]
+        header = yaml.load(header)
+        content = markdown.markdown(content)
+        print content
 
 class Category(Node):
     def __init__(self, name, url=''):
@@ -93,6 +128,7 @@ class Site(Node):
         self.posts = []
         self.categores = dict()
         self.tags = dict()
+        self.layout_lookup = None
 
     def generate(self):
         pass
@@ -108,7 +144,16 @@ class Site(Node):
         print config_path
 
     def _load_theme(self):
-        pass
+        theme_path = os.path.join(self.root_path, '.zephyr')
+        theme_path = os.path.join(theme_path, 'themes')
+        theme_path = os.path.join(theme_path, 'default')
+        if not os.path.exists(theme_path):
+            return False
+        self.layout_lookup =  TemplateLookup(directories=[theme_path])
+        #layout_post = self.layout_lookup.get_template('post.html')
+        #print layout_post #.render()
+        return True
+
 
     def _load_posts(self):
         for root, dirs, files in os.walk(self.root_path):
@@ -119,7 +164,12 @@ class Site(Node):
                 self._parse_post(shortname, fullname)
 
     def _parse_post(self, shortname, fullname):
-        print (shortname, fullname)
+        post = Post.parse(shortname, fullname)
+        self._add_post(post)
+
+    def _add_post(self, post):
+        pass
+
 
 def init_sketch_path(path):
     if not os.path.exists(path):
