@@ -18,19 +18,11 @@ import time
 
 
 def create_file(filepath, content):
-    items = filepath.split('/')
-    print items
-    filepath = ''
-    for item in items[0:len(items) -1]:
-        filepath = os.path.join(filepath, item)
-        if not os.path.exists(filepath):
-            print filepath
-            os.mkdir(filepath)
-    filepath = os.path.join(filepath, items[len(items) - 1])
+    dirname = os.path.dirname(filepath)
+    os.makedirs(dirname)
     handle = open(filepath, 'w')
     handle.write(content)
     handle.close()
-
 
 class Node(object):
     def __init__(self, url, parent):
@@ -377,5 +369,5 @@ def publish(argv):
 
 
 if __name__ == "__main__":
-    create_file("~/test/test/test.txt", "test")
+    create_file("/home/youngtrips/test/test/test.txt", "test")
 
