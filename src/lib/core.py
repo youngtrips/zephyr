@@ -168,6 +168,8 @@ class Site(Node):
         self.enable_disqus = True
         self.enable_comment = True
         self.disqus_shortname = 'mindeden'
+        self.base_url = ''
+        self.base_path = ''
 
     def generate(self):
         for post in self.posts:
