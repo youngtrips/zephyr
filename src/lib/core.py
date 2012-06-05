@@ -15,15 +15,34 @@ import os
 import shutil
 import time
 
+
+
+def create_file(filepath, content):
+    items = filepath.split('/')
+    print items
+    filepath = ''
+    for item in items[0:len(items) -1]:
+        filepath = os.path.join(filepath, item)
+        if not os.path.exists(filepath):
+            print filepath
+            os.mkdir(filepath)
+    filepath = os.path.join(filepath, items[len(items) - 1])
+    handle = open(filepath, 'w')
+    handle.write(content)
+    handle.close()
+
+
 class Node(object):
-    def __init__(self, url):
+    def __init__(self, url, parent):
         object.__init__(self)
         self.url = url
+        self.parent = parent
 
     def generate(self):
         pass
 
 class Post(Node):
+    """
     def __init__(self, title, date, content, author, category, tags,
                  layout, comment=True, publish=True, url=''):
         Node.__init__(self, url)
@@ -38,29 +57,25 @@ class Post(Node):
         self.publish = publish
         self.layout = layout
         self.path = os.path.join('/'.join(date.split('-')), title)
+    """
 
+    def __init__(self, site, title, date, time, content, author, layout, url,
+                 category=None, tags=[], enable_comment=True):
+        Node.__init__(self, url, site)
+        self.title = title
+        self.date = date
+        self.time = time
+        self.content = content
+        self.author = author
+        self.category = category
+        self.tags = tags
+        self.layout = layout
+        self.url = url
+        self.enable_comment = enable_comment
 
-        """
-        self.title
-        self.date
-        self.time
-        self.content
-        self.author
-        self.cate
-        self.tags = []
-        self.comments
-        self.layout
-        self.url
-        self.enable_comment
-        """
-
-        class Foo:
-            pass
-        self.cate = Foo()
-        self.cate.name = 'default'
-        self.cate.url = '/categories/default'
-        self.enable_comment = True
-        print self.path
+    @property
+    def cate(self):
+        return self.parent.categories[self.category]
 
     def __cmp__(self, other):
         pass
@@ -71,33 +86,26 @@ class Post(Node):
     def set_url(self, url):
         self.url = url
 
-    def _render(self, site, page):
-        return self.layout.render(site=site,page=page,post=self)
-
-    def generate(self, site):
+    def _render(self):
         class Foo:
             pass
         page = Foo()
-
         page.title = self.title
         page.name = self.title
         page.url = self.url
-        html = self._render(site, page)
+        return self.layout.render(site=self.parent,page=page,post=self)
+
+    def generate(self):
+        try:
+            html = self._render()
+        except:
+            print 'genrate post(%s) failed.' % (self.url)
+            return False
 
         #generate html file
-        items = self.date.split('-')
-        items.append(self.title)
-        path = os.path.join(site.root_path, '.zephyr')
-        path = os.path.join(path, 'html')
-        path = os.path.join(path, 'blog')
-        for item in items:
-            path = os.path.join(path, item)
-            if not os.path.exists(path):
-                os.mkdir(path)
-        path = os.path.join(path, 'index.html')
-        handle = open(path, 'w')
-        handle.write(html)
-        handle.close()
+        html_file = os.path.join(self.parent.path, self.url)
+        html_file = os.path.join(html_file, 'index.html')
+        return create_file(html_file, thml)
 
     @staticmethod
     def parse(site, shortname, fullname):
@@ -364,4 +372,10 @@ def publish(argv):
     print 'publish %s' % (path)
     site = Site(path)
     site.publish()
+
+
+
+
+if __name__ == "__main__":
+    create_file("~/test/test/test.txt", "test")
 
