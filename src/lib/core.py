@@ -25,7 +25,7 @@ class Node(object):
 
 class Post(Node):
     def __init__(self, title, date, content, author, category, tags,
-                 comment=True, publish=True, url=''):
+                 layout, comment=True, publish=True, url=''):
         Node.__init__(self, url)
         self.title = title
         self.date = date
@@ -35,9 +35,9 @@ class Post(Node):
         self.tags = tags
         self.comment = comment
         self.publish = publish
-        self.layout = 'post'
-        self.render = None
-        self.path = None
+        self.layout = layout
+        self.path = os.path.join('/'.join(date.split('-')), title)
+        print self.path
 
     def __cmp__(self, other):
         pass
@@ -49,7 +49,7 @@ class Post(Node):
         self.url = url
 
     def _render(self, site, page):
-        return self.render.render(site=siet,page=page,post=self)
+        return self.layout.render(site=siet,page=page,post=self)
 
     def generate(self, site):
         class Foo:
@@ -57,15 +57,27 @@ class Post(Node):
         page = Foo()
 
         page.title = self.title
-        page.name = self.name
+        page.name = self.title
         page.url = self.url
         html = self._render(site, page)
-        handle = open(self.path, 'w')
+
+        #generate html file
+        itmes = self.date.split('-')
+        items.append(self.title)
+        path = os.path.join(site.root_path, '.zephyr')
+        path = os.path.join(path, 'html')
+        path = os.path.join(path, 'blog')
+        for item in items:
+            path = os.path.join(path, item)
+            if not os.path.exists(path):
+                os.mkdir(path)
+        path = os.path.join(path, 'index.html')
+        handle = open(path, 'w')
         handle.write(html)
         handle.close()
 
     @staticmethod
-    def parse(shortname, fullname):
+    def parse(site, shortname, fullname):
         if not os.path.exists(fullname):
             return None
         content = ''
@@ -84,8 +96,18 @@ class Post(Node):
         header = content[0:pos]
         content = content[pos + len(HEADER_SEP):]
         header = yaml.load(header)
+
         content = markdown.markdown(content)
         print content
+        items = os.path.splitext(shortname)[0].split('-')
+        date = '-'.join(items[0:3])
+        title = '-'.join(items[3:])
+
+        layout = site.layout_lookup.get_template('post')
+        print layout
+
+        post = Post(title, date, content, 'Tuz', header['category'], header['tags'], layout)
+        return post
 
 class Category(Node):
     def __init__(self, name, url=''):
@@ -98,6 +120,7 @@ class Category(Node):
 
     def generate(self):
         pass
+
 
 class Tag(Node):
     def __init__(self, name, url=''):
@@ -136,12 +159,14 @@ class Site(Node):
         self.layout_lookup = None
 
     def generate(self):
-        pass
+        for post in self.posts:
+            post.generate(self)
 
     def publish(self):
         self._load_config()
         self._load_theme()
         self._load_posts()
+        self.generate()
 
     def _load_config(self):
         config_path = os.path.join(self.root_path, '.zephyr')
@@ -169,11 +194,11 @@ class Site(Node):
                 self._parse_post(shortname, fullname)
 
     def _parse_post(self, shortname, fullname):
-        post = Post.parse(shortname, fullname)
+        post = Post.parse(self, shortname, fullname)
         self._add_post(post)
 
     def _add_post(self, post):
-        pass
+        self.posts.append(post)
 
 
 def init_sketch_path(path):
