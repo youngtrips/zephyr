@@ -48,7 +48,7 @@ class Post(Node):
         self.url = url
 
     def _render(self, site, page):
-        pass
+        return self.render.render(site=siet,page=page,post=self)
 
     def generate(self, site):
         class Foo:
