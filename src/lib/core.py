@@ -114,17 +114,53 @@ class Post(Node):
         HEADER_SEP = '---\n'
 
         pos = content.find(HEADER_SEP) + len(HEADER_SEP)
+        if pos < 0:
+            print 'Invalid post file(%s)' % (fullname)
+            return None
         content = content[pos:]
         pos = content.find(HEADER_SEP)
+        if pos < 0:
+            print 'Invalid post file(%s)' % (fullname)
+            return None
         header = content[0:pos]
         content = content[pos + len(HEADER_SEP):]
         header = yaml.load(header)
 
-        content = markdown.markdown(content)
-        items = os.path.splitext(shortname)[0].split('-')
-        date = '-'.join(items[0:3])
-        title = '-'.join(items[3:])
+        """
+        self.title
+        self.date
+        self.time
+        self.content
+        self.author
+        self.cate
+        self.tags = []
+        self.comments
+        self.layout
+        self.url
+        self.enable_comment
+        """
 
+        items = os.path.splitext(shortname)[0].split('-')
+        postfilename = '-'.join(items[3:])
+        title = postfilename
+
+        date = '-'.join(items[0:3])
+        time = '00:00:00'
+        layout = 'post'
+        if header['date']:
+            time = header['date'].split()[1]
+
+        if header['layout']:
+            layout = header['layout']
+        layout = site.layout_lookup.get_template(layout+'.html')
+
+        if header['title']:
+            title = header['title']
+
+        author = site.author
+        url = 'blog/' + '-'.join(date.split('-')) + '/' + postfilename
+
+        content = markdown.markdown(content)
         layout = site.layout_lookup.get_template('post.html')
 
         post = Post(title, date, content, 'Tuz', header['category'], header['tags'], layout)
