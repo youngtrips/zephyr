@@ -205,6 +205,22 @@ class Config(object):
     def _parse(self, conf):
         pass
 
+
+"""
+[site]
+name = MindEden
+description = Somewhere to keep my idears
+url = http://mindeden.com
+keywords = codedelight mindeden linux
+pagelimit = 10
+theme = default
+disqus_shortname = 'mindeden'
+
+
+[author]
+name = Tuz
+email = youngtrips@gmail.com
+"""
 class Config(object):
     def __init__(self, conf):
         object.__init__(self)
