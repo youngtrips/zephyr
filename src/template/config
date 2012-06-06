@@ -13,11 +13,8 @@ name = Tuz
 email = youngtrips@gmail.com
 
 [repo]
-vps_repo = git@mindeden:/home/git/repo/mindeden.com.git
+url = git@github.com:youngtrips/mindeden.git
 
 [rsync]
-username = git
-key = /home/youngtrips/.ssh/id_rsa
-
-
+url = root@codedelight:/var/www/
 
