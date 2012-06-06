@@ -199,14 +199,17 @@ class Author(object):
         self.name = name
         self.mail = mail
 
-class Config(object):
-    def __init__(self, conf):
-        object.__init__(self)
-        self._parse(conf)
+class Page(Node):
+    def __init__(self, site, name, title, content, url):
+        Node.__init__(self, url, site)
+        self.name = name
 
-    def _parse(self, conf):
+    def generate(self):
         pass
 
+    @staticmethod
+    def parse(pagefile):
+        pass
 
 """
 [site]
@@ -292,14 +295,15 @@ class Site(Node):
         return True
 
     def _load_posts(self):
-        for root, dirs, files in os.walk(self.path):
+        for root, dirs, files in os.walk(os.path.join(self.path, 'posts')):
             if '.zephyr' in dirs:
                 dirs.remove('.zephyr')
             for shortname in files:
-                fullname = os.path.join(self.path, shortname)
+                fullname = os.path.join(root, shortname)
                 self._parse_post(shortname, fullname)
 
     def _parse_post(self, shortname, fullname):
+        print fullname
         post = Post.parse(self, shortname, fullname)
         self._add_post(post)
         self._add_category(post.category, post)
@@ -355,13 +359,22 @@ def init_sketch_path(path):
     dst_html = os.path.join(zephyr_path, 'html')
     shutil.copytree(src_html, dst_html)
 
+    # posts path
+    post_path = os.path.join(path, 'posts')
+    os.mkdir(post_path)
+
+    # pages path
+    page_path = os.path.join(path, 'pages')
+    os.mkdir(page_path)
+
 from optparse import OptionParser
 
 def new_post(postname, title, path):
     category = ''
     tags = ''
     date = time.strftime('%Y-%m-%d %H:%M:%S')
-    path = os.path.join(path, date.split()[0] + '-' + postname + '.md')
+    path = os.path.join(path, 'posts',
+                        date.split()[0] + '-' + postname + '.md')
     sketch_header = ''
     sketch_header += '---\n'
     sketch_header += 'layout: post\n'
