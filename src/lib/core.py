@@ -33,7 +33,7 @@ class Node(object):
         self.parent = parent
         self.url = ''
         if parent:
-            self.url = parent.url + '/' + self.path
+            self.url = parent.url + '/' + self.path + '/'
 
     def generate(self):
         pass
