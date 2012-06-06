@@ -17,11 +17,9 @@
 <div class="span-24" id="nav-menu">
 	<ul class="clearfix">
 		<li><a href="${site.url}" >Home</a></li>
-		<li><a href="${site.url}/archives/" >Archives</a></li>
         % for pageinfo in site.pages:
 		    <li><a href="${pageinfo.url}" >${pageinfo.name}</a></li>
         % endfor
-		<li><a href="${site.url}/about/" >About</a></li>
 	</ul>
 </div>
 

@@ -163,10 +163,10 @@ class Category(Node):
     def __init__(self, site, name, url=''):
         Node.__init__(self, url, site)
         self.name = name
-        self.posts = dict()
+        self.posts = []
 
     def add_post(self, post):
-        self.posts[post.url] = post
+        self.posts.append(post)
 
     def generate(self):
         class Foo:
@@ -175,8 +175,8 @@ class Category(Node):
         page.title = 'Category: ' + self.name
         page.name = self.name
         page.url = self.url
-        layout = self.parent.layout_lookup.get_template("page.html")
-        html = layout.render(site=self.parent, page=page)
+        layout = self.parent.layout_lookup.get_template("category.html")
+        html = layout.render(site=self.parent, page=page, cate=self)
         filename = os.path.join(self.parent.path, '.zephyr', 'html',
                                 self.path, 'index.html')
         create_file(filename, html)
@@ -200,16 +200,61 @@ class Author(object):
         self.mail = mail
 
 class Page(Node):
-    def __init__(self, site, name, title, content, url):
-        Node.__init__(self, url, site)
+    def __init__(self, site, name, title, content, path, layout):
+        Node.__init__(self, path, site)
         self.name = name
+        self.content = content
+        self.title = title
+        self.layout = layout
 
     def generate(self):
-        pass
+        layout = self.parent.layout_lookup.get_template(self.layout + '.html')
+        html = layout.render(site=self.parent, page=self)
+        pagefile = os.path.join(self.parent.path, '.zephyr', 'html',
+                                self.path, 'index.html')
+        create_file(pagefile, html)
 
     @staticmethod
-    def parse(pagefile):
-        pass
+    def parse(site, shortname, fullname):
+        if not os.path.exists(fullname):
+            return None
+        content = ''
+        try:
+            import codecs
+            handle = codecs.open(fullname, mode="r", encoding="utf-8")
+            content = handle.read()
+            handle.close()
+        except:
+            return None
+        HEADER_SEP = '---\n'
+
+        pos = content.find(HEADER_SEP) + len(HEADER_SEP)
+        if pos < 0:
+            print 'Invalid post file(%s)' % (fullname)
+            return None
+        content = content[pos:]
+        pos = content.find(HEADER_SEP)
+        if pos < 0:
+            print 'Invalid post file(%s)' % (fullname)
+            return None
+        header = content[0:pos]
+        content = content[pos + len(HEADER_SEP):]
+        header = yaml.load(header)
+        print header
+        content = markdown.markdown(content)
+
+        path = os.path.splitext(shortname)[0]
+        title = path
+        if header.get('title'):
+            title = header['title']
+        layout = 'page_index'
+        if header.get('layout'):
+            layout = header['layout']
+        name = title
+
+        page = Page(site, name, title, content, path, layout)
+        return page
+
 
 """
 [site]
@@ -278,19 +323,26 @@ class Site(Node):
             if cate:
                 cate.generate()
 
+        for page in self.pages:
+            if page:
+                page.generate()
+
         self._generate_index()
 
 
     def publish(self):
         self._load_theme()
         self._load_posts()
+        self._load_pages()
         self.generate()
 
     def _load_theme(self):
         theme_path = os.path.join(self.path, '.zephyr', 'themes', self.theme)
         if not os.path.exists(theme_path):
             return False
-        self.layout_lookup =  TemplateLookup(directories=[theme_path])
+        self.layout_lookup =  TemplateLookup(directories=[theme_path],
+                                             input_encoding='utf-8',
+                                             output_encoding='utf-8')
         print self.layout_lookup
         return True
 
@@ -307,6 +359,17 @@ class Site(Node):
         post = Post.parse(self, shortname, fullname)
         self._add_post(post)
         self._add_category(post.category, post)
+
+    def _load_pages(self):
+        for root, dirs, files in os.walk(os.path.join(self.path, 'pages')):
+            for shortname in files:
+                fullname = os.path.join(root, shortname)
+                self._parse_page(shortname, fullname)
+
+    def _parse_page(self, shortname, fullname):
+        page = Page.parse(self, shortname, fullname)
+        if page:
+            self.pages.append(page)
 
     def _add_post(self, post):
         self.posts.append(post)
