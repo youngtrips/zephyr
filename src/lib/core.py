@@ -19,7 +19,9 @@ import time
 
 def create_file(filepath, content):
     dirname = os.path.dirname(filepath)
-    os.makedirs(dirname)
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+    print filepath
     handle = open(filepath, 'w')
     handle.write(content)
     handle.close()
@@ -67,13 +69,19 @@ class Post(Node):
 
     @property
     def cate(self):
-        return self.parent.categories[self.category]
+        class Foo:
+            pass
+        obj = Foo()
+        obj.name = 'Test'
+        obj.url = '/'
+        return obj
+        #return self.parent.categories[self.category]
 
     def __cmp__(self, other):
         pass
 
     def __str__(self):
-        return 'post<title=%s>' % title
+        return 'post<title=%s>' % self.title
 
     def set_url(self, url):
         self.url = url
@@ -88,16 +96,19 @@ class Post(Node):
         return self.layout.render(site=self.parent,page=page,post=self)
 
     def generate(self):
+        """
         try:
             html = self._render()
         except:
             print 'genrate post(%s) failed.' % (self.url)
             return False
+        """
+        html = self._render()
 
         #generate html file
-        html_file = os.path.join(self.parent.path, self.url)
-        html_file = os.path.join(html_file, 'index.html')
-        return create_file(html_file, thml)
+        html_file = os.path.join(self.parent.path, '.zephyr', 'html',
+                                    self.url, 'index.html')
+        return create_file(html_file, html)
 
     @staticmethod
     def parse(site, shortname, fullname):
@@ -125,6 +136,7 @@ class Post(Node):
         header = content[0:pos]
         content = content[pos + len(HEADER_SEP):]
         header = yaml.load(header)
+        print header
 
         """
         self.title
@@ -148,7 +160,7 @@ class Post(Node):
         time = '00:00:00'
         layout = 'post'
         if header['date']:
-            time = header['date'].split()[1]
+            time = header['date'].strftime('%H:%M:%S')
 
         if header['layout']:
             layout = header['layout']
@@ -158,12 +170,15 @@ class Post(Node):
             title = header['title']
 
         author = site.author
-        url = 'blog/' + '-'.join(date.split('-')) + '/' + postfilename
+        url = 'blog/' + '/'.join(date.split('-')) + '/' + postfilename
+        print 'blog url: %s' % url
 
         content = markdown.markdown(content)
         layout = site.layout_lookup.get_template('post.html')
 
-        post = Post(title, date, content, 'Tuz', header['category'], header['tags'], layout)
+        #    def __init__(self, site, title, date, time, content, author, layout, url,
+        #         category=None, tags=[], enable_comment=True):
+        post = Post(site, title, date, time, content, author, layout, url)
         return post
 
 class Category(Node):
@@ -221,61 +236,73 @@ disqus_shortname = 'mindeden'
 name = Tuz
 email = youngtrips@gmail.com
 """
+import ConfigParser
 class Config(object):
-    def __init__(self, conf):
+    def __init__(self, conf_file):
         object.__init__(self)
-        print conf
-        self.name = ''
-        self.author = ''
-        self.url = ''
-        self.pagelimit = 0
-        self.enable_disqus = True
-        self.disqus_shortname = ''
+        self.handle = ConfigParser.SafeConfigParser()
+        self.handle.read(conf_file)
 
 class Site(Node):
-    def __init__(self, root_path):
+    def __init__(self, path):
         Node.__init__(self, '', None)
-        self.path = root_path
+        self.path = path
         conf = os.path.join(self.path, '.zephyr', 'config')
         self.config = Config(conf)
         self.pages = []
         self.categories = []
         self.posts = []
         self.layout_lookup = None
+        self.enable_disqus = True
+
+    @property
+    def name(self):
+        return self.config.handle.get('site', 'name')
+        
+    @property
+    def description(self):
+        return self.config.handle.get('site', 'description')
+
+    @property
+    def author(self):
+        return self.config.handle.get('author', 'name')
+
+    @property
+    def pagelimit(self):
+        return self.config.handle.get('site', 'pagelimit')
+
+    @property
+    def disqus_shortname(self):
+        return self.config.handle.get('site', 'disqus_shortname')
+
+    @property
+    def theme(self):
+        return self.config.handle.get('site', 'theme')
 
     def generate(self):
         for post in self.posts:
-            post.generate(self)
+            if post:
+                post.generate()
 
     def publish(self):
-        self._load_config()
         self._load_theme()
         self._load_posts()
         self.generate()
 
-    def _load_config(self):
-        config_path = os.path.join(self.root_path, '.zephyr')
-        config_path = os.path.join(config_path, 'config')
-        print config_path
-
     def _load_theme(self):
-        theme_path = os.path.join(self.root_path, '.zephyr')
-        theme_path = os.path.join(theme_path, 'themes')
-        theme_path = os.path.join(theme_path, 'default')
+        theme_path = os.path.join(self.path, '.zephyr', 'themes', self.theme)
         if not os.path.exists(theme_path):
             return False
         self.layout_lookup =  TemplateLookup(directories=[theme_path])
-        #layout_post = self.layout_lookup.get_template('post.html')
-        #print layout_post #.render()
+        print self.layout_lookup
         return True
 
-
     def _load_posts(self):
-        for root, dirs, files in os.walk(self.root_path):
+        for root, dirs, files in os.walk(self.path):
             if '.zephyr' in dirs:
                 dirs.remove('.zephyr')
             for shortname in files:
-                fullname = os.path.join(self.root_path, shortname)
+                fullname = os.path.join(self.path, shortname)
                 self._parse_post(shortname, fullname)
 
     def _parse_post(self, shortname, fullname):
@@ -345,7 +372,13 @@ def publish(path):
         return
     print 'publish %s' % (path)
     site = Site(path)
-    #site.publish()
+    print site.name
+    print site.description
+    print site.author
+    print site.theme
+
+    print 'start publish...'
+    site.publish()
 
 
 
