@@ -205,34 +205,27 @@ class Config(object):
     def _parse(self, conf):
         pass
 
+class Config(object):
+    def __init__(self, conf):
+        object.__init__(self)
+        print conf
+        self.name = ''
+        self.author = ''
+        self.url = ''
+        self.pagelimit = 0
+        self.enable_disqus = True
+        self.disqus_shortname = ''
+
 class Site(Node):
     def __init__(self, root_path):
-        Node.__init__(self, '')
-        self.root_path = root_path
-        self.config = None
-        self.posts = []
-        self.categories = dict()
-        self.tags = dict()
-        self.layout_lookup = None
-        self.name = 'MindEden'
+        Node.__init__(self, '', None)
+        self.path = root_path
+        conf = os.path.join(self.path, '.zephyr', 'config')
+        self.config = Config(conf)
         self.pages = []
-        self.author = 'Tuz'
-        self.enable_disqus = True
-        self.enable_comment = True
-        self.disqus_shortname = 'mindeden'
-        self.base_url = ''
-        self.base_path = ''
-        """
-        site.name
-        site.author
-        site.url
-        site.pagelimit
-        site.pages = []
-        site.categories = []
-        site.posts = []
-        site.enable_disqus = True
-        site.disqus_shortname
-        """
+        self.categories = []
+        self.posts = []
+        self.layout_lookup = None
 
     def generate(self):
         for post in self.posts:
@@ -336,7 +329,7 @@ def publish(path):
         return
     print 'publish %s' % (path)
     site = Site(path)
-    site.publish()
+    #site.publish()
 
 
 
