@@ -256,64 +256,47 @@ class Page(Node):
         return page
 
 
-"""
-[site]
-name = MindEden
-description = Somewhere to keep my idears
-url = http://mindeden.com
-keywords = codedelight mindeden linux
-pagelimit = 10
-theme = default
-disqus_shortname = 'mindeden'
-
-
-[author]
-name = Tuz
-email = youngtrips@gmail.com
-"""
-import ConfigParser
-class Config(object):
-    def __init__(self, conf_file):
-        object.__init__(self)
-        self.handle = ConfigParser.SafeConfigParser()
-        self.handle.read(conf_file)
+def load_config(conf):
+    import imp
+    obj = imp.load_source('config', conf)
+    return obj
 
 class Site(Node):
     def __init__(self, path):
         Node.__init__(self, '', None)
         self.path = path
-        conf = os.path.join(self.path, '.zephyr', 'config')
-        self.config = Config(conf)
+        conf = os.path.join(self.path, '.zephyr', 'config.py')
+        self.config = load_config(conf)
         self.pages = []
         self.categories = dict()
         self.posts = []
         self.layout_lookup = None
         self.enable_disqus = True
-        self.url = self.config.handle.get('site', 'url')
+        self.url = self.config.SITE['url']
 
     @property
     def name(self):
-        return self.config.handle.get('site', 'name')
+        return self.config.SITE['name']
         
     @property
     def description(self):
-        return self.config.handle.get('site', 'description')
+        return self.config.SITE['description']
 
     @property
     def author(self):
-        return self.config.handle.get('author', 'name')
+        return self.config.AUTHOR['name']
 
     @property
     def pagelimit(self):
-        return self.config.handle.get('site', 'pagelimit')
+        return self.config.SITE['pagelimit']
 
     @property
     def disqus_shortname(self):
-        return self.config.handle.get('site', 'disqus_shortname')
+        return self.config.SITE['disqus_shortname']
 
     @property
     def theme(self):
-        return self.config.handle.get('site', 'theme')
+        return self.config.SITE['theme']
 
     def generate(self):
         for post in self.posts:
@@ -408,8 +391,8 @@ def init_sketch_path(path):
         os.mkdir(zephyr_path)
     
     # copy template config
-    src_config = 'template/config'
-    dst_config = os.path.join(zephyr_path, 'config')
+    src_config = 'template/config.py'
+    dst_config = os.path.join(zephyr_path, 'config.py')
     shutil.copy(src_config, dst_config)
 
     # copy themes

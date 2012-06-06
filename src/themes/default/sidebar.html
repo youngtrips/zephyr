@@ -6,3 +6,13 @@
                 % endfor
 			</ul>
 		</div>
+
+		<div class="sub-menu">
+			<h4>Links</h4>
+			<ul>
+                % for title, url in site.config.LINKS.iteritems():
+				    <li><a href="${url}">${title}</a></li>
+                % endfor
+			</ul>
+		</div>
+
