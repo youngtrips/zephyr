@@ -36,23 +36,6 @@ class Node(object):
         pass
 
 class Post(Node):
-    """
-    def __init__(self, title, date, content, author, category, tags,
-                 layout, comment=True, publish=True, url=''):
-        Node.__init__(self, url)
-        self.title = title
-        self.date = date
-        self.time = '00:00:00'
-        self.content = content
-        self.author = author
-        self.category = category
-        self.tags = tags
-        self.comment = comment
-        self.publish = publish
-        self.layout = layout
-        self.path = os.path.join('/'.join(date.split('-')), title)
-    """
-
     def __init__(self, site, title, date, time, content, author, layout, url,
                  category=None, tags=[], enable_comment=True):
         Node.__init__(self, url, site)
@@ -64,18 +47,13 @@ class Post(Node):
         self.category = category
         self.tags = tags
         self.layout = layout
-        self.url = url
         self.enable_comment = enable_comment
+        print self.url
 
     @property
     def cate(self):
-        class Foo:
-            pass
-        obj = Foo()
-        obj.name = 'Test'
-        obj.url = '/'
-        return obj
-        #return self.parent.categories[self.category]
+        print self.parent.categories
+        return self.parent.categories[self.category]
 
     def __cmp__(self, other):
         pass
@@ -138,20 +116,6 @@ class Post(Node):
         header = yaml.load(header)
         print header
 
-        """
-        self.title
-        self.date
-        self.time
-        self.content
-        self.author
-        self.cate
-        self.tags = []
-        self.comments
-        self.layout
-        self.url
-        self.enable_comment
-        """
-
         items = os.path.splitext(shortname)[0].split('-')
         postfilename = '-'.join(items[3:])
         title = postfilename
@@ -169,21 +133,32 @@ class Post(Node):
         if header['title']:
             title = header['title']
 
+        category = 'default'
+        if header['category']:
+            category = header['category']
+        print category
+
+        tags = []
+        if header['tags']:
+            tags = header['tags']
+
+        enable_comment = True
+        if header.get('comment'):
+            enable_comment = header['comment']
+
         author = site.author
         url = 'blog/' + '/'.join(date.split('-')) + '/' + postfilename
-        print 'blog url: %s' % url
 
         content = markdown.markdown(content)
         layout = site.layout_lookup.get_template('post.html')
 
-        #    def __init__(self, site, title, date, time, content, author, layout, url,
-        #         category=None, tags=[], enable_comment=True):
-        post = Post(site, title, date, time, content, author, layout, url)
+        post = Post(site, title, date, time, content, author, layout, url,
+                    category, tags, enable_comment)
         return post
 
 class Category(Node):
-    def __init__(self, name, url=''):
-        Node.__init__(self, url)
+    def __init__(self, site, name, url=''):
+        Node.__init__(self, url, site)
         self.name = name
         self.posts = dict()
 
@@ -250,7 +225,7 @@ class Site(Node):
         conf = os.path.join(self.path, '.zephyr', 'config')
         self.config = Config(conf)
         self.pages = []
-        self.categories = []
+        self.categories = dict()
         self.posts = []
         self.layout_lookup = None
         self.enable_disqus = True
@@ -308,10 +283,18 @@ class Site(Node):
     def _parse_post(self, shortname, fullname):
         post = Post.parse(self, shortname, fullname)
         self._add_post(post)
+        self._add_category(post.category, post)
 
     def _add_post(self, post):
         self.posts.append(post)
 
+    def _add_category(self, cate_name, post):
+        cate = self.categories.get(cate_name)
+        if not cate:
+            url = os.path.join('categories', cate_name)
+            cate = Category(self, cate_name, url)
+            self.categories[cate_name] = cate
+        cate.add_post(post)
 
 def init_sketch_path(path):
     if not os.path.exists(path):

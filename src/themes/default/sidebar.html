@@ -1,7 +1,7 @@
 		<div class="sub-menu">
 			<h4>Categories</h4>
 			<ul>
-                % for cate in site.categories:
+                % for key, cate in site.categories.iteritems():
 				    <li><a href="${cate.url}">${cate.name}</a></li>
                 % endfor
 			</ul>
