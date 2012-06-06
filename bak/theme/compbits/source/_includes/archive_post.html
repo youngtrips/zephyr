@@ -1,9 +1,0 @@
-{% set year = post.date.split('-')[0] %}
-{% set mon = post.date.split('-')[1] %}
-{% set day = post.date.split('-')[2] %}
-<h2 class="year">{{ year }}</h2>
-
-<div class="post-line">
-  <h1><a href="{{ root_url }}{{ post.url }}">{{ post.title }}</a></h1>
-  <time datetime="{{ post.date }}" pubdate><span class='month'>{{mon}}</span> <span class='day'>{{day}}</span> <span class='year'>{{year}}</span>"}}</time>
-</div>
