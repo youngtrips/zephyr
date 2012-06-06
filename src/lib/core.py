@@ -329,18 +329,14 @@ def new_post(postname, title, path):
     handle.close()
     print 'create new post [%s].' % (path)
 
-def publish(argv):
-    path = os.getcwd()
-    if len(argv) == 1:
-        path = argv[0]
+def publish(path):
     zephyr_path = os.path.join(path, ".zephyr")
     if not os.path.exists(zephyr_path):
         print 'Not a sketch path'
-        sys.exit()
+        return
     print 'publish %s' % (path)
     site = Site(path)
     site.publish()
-
 
 
 
