@@ -15,5 +15,9 @@ email = youngtrips@gmail.com
 [repo]
 vps_repo = git@mindeden:/home/git/repo/mindeden.com.git
 
-[sync]
+[rsync]
+username = git
+key = /home/youngtrips/.ssh/id_rsa
+
+
 
