@@ -27,10 +27,13 @@ def create_file(filepath, content):
     handle.close()
 
 class Node(object):
-    def __init__(self, url, parent):
+    def __init__(self, path, parent):
         object.__init__(self)
-        self.url = url
+        self.path = path
         self.parent = parent
+        self.url = ''
+        if parent:
+            self.url = parent.url + '/' + self.path
 
     def generate(self):
         pass
@@ -85,7 +88,7 @@ class Post(Node):
 
         #generate html file
         html_file = os.path.join(self.parent.path, '.zephyr', 'html',
-                                    self.url, 'index.html')
+                                    self.path, 'index.html')
         return create_file(html_file, html)
 
     @staticmethod
@@ -166,8 +169,17 @@ class Category(Node):
         self.posts[post.url] = post
 
     def generate(self):
-        pass
-
+        class Foo:
+            pass
+        page = Foo()
+        page.title = 'Category: ' + self.name
+        page.name = self.name
+        page.url = self.url
+        layout = self.parent.layout_lookup.get_template("page.html")
+        html = layout.render(site=self.parent, page=page)
+        filename = os.path.join(self.parent.path, '.zephyr', 'html',
+                                self.path, 'index.html')
+        create_file(filename, html)
 
 class Tag(Node):
     def __init__(self, name, url=''):
@@ -229,6 +241,7 @@ class Site(Node):
         self.posts = []
         self.layout_lookup = None
         self.enable_disqus = True
+        self.url = self.config.handle.get('site', 'url')
 
     @property
     def name(self):
@@ -258,6 +271,12 @@ class Site(Node):
         for post in self.posts:
             if post:
                 post.generate()
+        for name, cate in self.categories.iteritems():
+            if cate:
+                cate.generate()
+
+        self._generate_index()
+
 
     def publish(self):
         self._load_theme()
@@ -295,6 +314,18 @@ class Site(Node):
             cate = Category(self, cate_name, url)
             self.categories[cate_name] = cate
         cate.add_post(post)
+
+    def _generate_index(self):
+        filename = os.path.join(self.path, '.zephyr', 'html', 'index.html')
+        layout = self.layout_lookup.get_template('page.html')
+        class Foo:
+            pass
+        page = Foo()
+        page.name = 'Home'
+        page.title = 'Home'
+        page.url = self.url
+        html = layout.render(site=self, page=page)
+        create_file(filename, html)
 
 def init_sketch_path(path):
     if not os.path.exists(path):
