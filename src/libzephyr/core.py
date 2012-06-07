@@ -54,6 +54,10 @@ class Post(Node):
         self.timestamp = 0
 
     @property
+    def time(self):
+        return self.timeval
+
+    @property
     def cate(self):
         return self.parent.categories[self.category]
 
