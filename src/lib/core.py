@@ -15,7 +15,7 @@ import os
 import shutil
 import time
 
-
+BIN_PATH = os.path.dirname(sys.argv[0])
 
 def create_file(filepath, content):
     dirname = os.path.dirname(filepath)
@@ -51,11 +51,9 @@ class Post(Node):
         self.tags = tags
         self.layout = layout
         self.enable_comment = enable_comment
-        print self.url
 
     @property
     def cate(self):
-        print self.parent.categories
         return self.parent.categories[self.category]
 
     def __cmp__(self, other):
@@ -117,7 +115,6 @@ class Post(Node):
         header = content[0:pos]
         content = content[pos + len(HEADER_SEP):]
         header = yaml.load(header)
-        print header
 
         items = os.path.splitext(shortname)[0].split('-')
         postfilename = '-'.join(items[3:])
@@ -139,7 +136,6 @@ class Post(Node):
         category = 'default'
         if header['category']:
             category = header['category']
-        print category
 
         tags = []
         if header['tags']:
@@ -240,7 +236,6 @@ class Page(Node):
         header = content[0:pos]
         content = content[pos + len(HEADER_SEP):]
         header = yaml.load(header)
-        print header
         content = markdown.markdown(content)
 
         path = os.path.splitext(shortname)[0]
@@ -320,13 +315,36 @@ class Site(Node):
         self.generate()
 
     def _load_theme(self):
-        theme_path = os.path.join(self.path, '.zephyr', 'themes', self.theme)
+        #theme_path = os.path.join(self.path, '.zephyr', 'themes', self.theme)
+        theme_path = os.path.join(BIN_PATH, 'themes', self.theme)
         if not os.path.exists(theme_path):
             return False
         self.layout_lookup =  TemplateLookup(directories=[theme_path],
                                              input_encoding='utf-8',
                                              output_encoding='utf-8')
-        print self.layout_lookup
+        # copy theme's stylesheets
+        src_stylesheets = os.path.join(theme_path, 'stylesheets')
+        dst_stylesheets = os.path.join(self.path,
+                                       '.zephyr', 'html', 'stylesheets')
+        if os.path.exists(dst_stylesheets):
+            shutil.rmtree(dst_stylesheets)
+        shutil.copytree(src_stylesheets, dst_stylesheets)
+
+        # copy theme's images
+        src_images = os.path.join(theme_path, 'images')
+        dst_images = os.path.join(self.path,
+                                       '.zephyr', 'html', 'images')
+        if os.path.exists(dst_images):
+            shutil.rmtree(dst_images)
+        shutil.copytree(src_images, dst_images)
+
+        # copy assets path
+        src_assets = os.path.join(self.path, 'assets')
+        dst_assets = os.path.join(self.path,
+                                  '.zephyr', 'html', 'assets')
+        if os.path.exists(dst_assets):
+            shutil.rmtree(dst_assets)
+        shutil.copytree(src_assets, dst_assets)
         return True
 
     def _load_posts(self):
@@ -338,7 +356,6 @@ class Site(Node):
                 self._parse_post(shortname, fullname)
 
     def _parse_post(self, shortname, fullname):
-        print fullname
         post = Post.parse(self, shortname, fullname)
         self._add_post(post)
         self._add_category(post.category, post)
@@ -391,17 +408,12 @@ def init_sketch_path(path):
         os.mkdir(zephyr_path)
     
     # copy template config
-    src_config = 'template/config.py'
+    src_config = os.path.join(BIN_PATH, 'template', 'config.py')
     dst_config = os.path.join(zephyr_path, 'config.py')
     shutil.copy(src_config, dst_config)
 
-    # copy themes
-    src_themes = 'themes'
-    dst_themes = os.path.join(zephyr_path, 'themes')
-    shutil.copytree(src_themes, dst_themes)
-
     # mkdir site entites
-    src_html = 'template/html'
+    src_html = os.path.join(BIN_PATH, 'template', 'html')
     dst_html = os.path.join(zephyr_path, 'html')
     shutil.copytree(src_html, dst_html)
 
@@ -445,16 +457,11 @@ def publish(path):
         return
     print 'publish %s' % (path)
     site = Site(path)
-    print site.name
-    print site.description
-    print site.author
-    print site.theme
+    #print site.name
+    #print site.description
+    #print site.author
+    #print site.theme
 
     print 'start publish...'
     site.publish()
-
-
-
-if __name__ == "__main__":
-    create_file("/home/youngtrips/test/test/test.txt", "test")
 
