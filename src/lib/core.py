@@ -450,6 +450,16 @@ def new_post(postname, title, path):
     handle.close()
     print 'create new post [%s].' % (path)
 
+def rsync_site(site):
+    import shlex, subprocess
+    src_path = os.path.join(site.path, '.zephyr', 'html')
+    for tag, dst_path in site.config.RSYNC.iteritems():
+        print 'rsync site to %s(\'%s\')......' % (tag, dst_path)
+        cmdline = 'rsync -az -e ssh %s %s' % (src_path, dst_path)
+        args = shlex.split(cmdline)
+        p = subprocess.Popen(args)
+        p.wait()
+
 def publish(path):
     zephyr_path = os.path.join(path, ".zephyr")
     if not os.path.exists(zephyr_path):
@@ -457,11 +467,10 @@ def publish(path):
         return
     print 'publish %s' % (path)
     site = Site(path)
-    #print site.name
-    #print site.description
-    #print site.author
-    #print site.theme
 
-    print 'start publish...'
+    print 'start publish:'
+    print 'generate html file......'
     site.publish()
+    print 'start rsync site:'
+    rsync_site(site)
 

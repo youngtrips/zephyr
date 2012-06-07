@@ -83,8 +83,8 @@ class Zephyr(cmdln.Cmdln):
         ${cmd_option_list}
         """
 
-        print "'zephyr %s' opts: %s" % (subcmd, opts)
-        print "'zephyr %s' args: %s" % (subcmd, args)
+        #print "'zephyr %s' opts: %s" % (subcmd, opts)
+        #print "'zephyr %s' args: %s" % (subcmd, args)
 
     def do_publish(self, subcmd, opts, *args):
         """Publish your posts
@@ -92,8 +92,8 @@ class Zephyr(cmdln.Cmdln):
         usage:
             publish [PATH]
         """
-        print "'zephyr %s' opts: %s" % (subcmd, opts)
-        print "'zephyr %s' args: %s" % (subcmd, args)
+        #print "'zephyr %s' opts: %s" % (subcmd, opts)
+        #print "'zephyr %s' args: %s" % (subcmd, args)
 
         path = ''
         if len(args) == 0:
