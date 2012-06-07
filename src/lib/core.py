@@ -452,10 +452,11 @@ def new_post(postname, title, path):
 
 def rsync_site(site):
     import shlex, subprocess
-    src_path = os.path.join(site.path, '.zephyr', 'html')
+    src_path = os.path.join(site.path, '.zephyr', 'html/')
     for tag, dst_path in site.config.RSYNC.iteritems():
         print 'rsync site to %s(\'%s\')......' % (tag, dst_path)
         cmdline = 'rsync -az -e ssh %s %s' % (src_path, dst_path)
+        print cmdline
         args = shlex.split(cmdline)
         p = subprocess.Popen(args)
         p.wait()
