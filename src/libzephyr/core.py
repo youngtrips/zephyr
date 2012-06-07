@@ -13,7 +13,7 @@ import yaml
 import sys
 import os
 import shutil
-from time import mktime
+import time
 
 BIN_PATH = os.path.dirname(sys.argv[0])
 
@@ -39,12 +39,12 @@ class Node(object):
         pass
 
 class Post(Node):
-    def __init__(self, site, title, date, time, content, author, layout, url,
+    def __init__(self, site, title, date, timeval, content, author, layout, url,
                  category=None, tags=[], enable_comment=True):
         Node.__init__(self, url, site)
         self.title = title
         self.date = date
-        self.time = time
+        self.timeval = timeval
         self.content = content
         self.author = author
         self.category = category
@@ -121,13 +121,13 @@ class Post(Node):
         postfilename = '-'.join(items[3:])
         title = postfilename
 
-        timestamp = mktime(header['date'].utctimetuple())
+        timestamp = time.mktime(header['date'].utctimetuple())
 
         date = '-'.join(items[0:3])
-        time = '00:00:00'
+        timeval = '00:00:00'
         layout = 'post'
         if header['date']:
-            time = header['date'].strftime('%H:%M:%S')
+            timeval = header['date'].strftime('%H:%M:%S')
 
         if header['layout']:
             layout = header['layout']
@@ -154,7 +154,7 @@ class Post(Node):
         content = markdown.markdown(content)
         layout = site.layout_lookup.get_template('post.html')
 
-        post = Post(site, title, date, time, content, author, layout, url,
+        post = Post(site, title, date, timeval, content, author, layout, url,
                     category, tags, enable_comment)
         post.timestamp = timestamp
         return post
