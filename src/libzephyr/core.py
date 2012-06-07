@@ -168,7 +168,7 @@ class Category(Node):
         class Foo:
             pass
         page = Foo()
-        page.title = 'Category: ' + self.name
+        page.title = 'Category &raquo; ' + self.name
         page.name = self.name
         page.url = self.url
         layout = self.parent.layout_lookup.get_template("category.html")
@@ -321,7 +321,8 @@ class Site(Node):
             return False
         self.layout_lookup =  TemplateLookup(directories=[theme_path],
                                              input_encoding='utf-8',
-                                             output_encoding='utf-8')
+                                             output_encoding='utf-8',
+                                             imports=['from lib.common import truncate_html'])
         # copy theme's stylesheets
         src_stylesheets = os.path.join(theme_path, 'stylesheets')
         dst_stylesheets = os.path.join(self.path,

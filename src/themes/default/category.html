@@ -13,7 +13,7 @@
 				    <span class="no-border"><a href="#">Comments</a></span>
                     -->
 			    </p>
-                <p>${post.content}</p>
+                ${post.content | truncate_html}
                 <p class="more"><a href="${post.url}" title="Its about time">Continue Reading ...</a></p>
         </div>
     % endfor

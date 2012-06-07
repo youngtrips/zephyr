@@ -7,10 +7,12 @@
 # Description: 
 #
 
-from lib import core
-import cmdln
 import sys
 import os
+LIBPATH = os.path.join(os.path.dirname(sys.argv[0]), 'lib')
+sys.path.insert(0, LIBPATH) 
+from libzephyr import core
+from lib import cmdln
 
 class Zephyr(cmdln.Cmdln):
     """Usage:
