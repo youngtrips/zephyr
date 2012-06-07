@@ -13,7 +13,7 @@ import yaml
 import sys
 import os
 import shutil
-import time
+from time import mktime
 
 BIN_PATH = os.path.dirname(sys.argv[0])
 
@@ -51,13 +51,14 @@ class Post(Node):
         self.tags = tags
         self.layout = layout
         self.enable_comment = enable_comment
+        self.timestamp = 0
 
     @property
     def cate(self):
         return self.parent.categories[self.category]
 
     def __cmp__(self, other):
-        pass
+        return cmp(other.timestamp, self.timestamp)
 
     def __str__(self):
         return 'post<title=%s>' % self.title
@@ -120,6 +121,8 @@ class Post(Node):
         postfilename = '-'.join(items[3:])
         title = postfilename
 
+        timestamp = mktime(header['date'].utctimetuple())
+
         date = '-'.join(items[0:3])
         time = '00:00:00'
         layout = 'post'
@@ -153,6 +156,7 @@ class Post(Node):
 
         post = Post(site, title, date, time, content, author, layout, url,
                     category, tags, enable_comment)
+        post.timestamp = timestamp
         return post
 
 class Category(Node):
@@ -294,6 +298,7 @@ class Site(Node):
         return self.config.SITE['theme']
 
     def generate(self):
+        self.posts.sort()
         for post in self.posts:
             if post:
                 post.generate()
@@ -392,6 +397,9 @@ class Site(Node):
         page.name = 'Home'
         page.title = 'Home'
         page.url = self.url
+
+        cmpfunc = lambda p1, p2 : cmp(p2.timestamp, p1.timestamp)
+        self.posts.sort(cmp=cmpfunc)
         html = layout.render(site=self, page=page)
         create_file(filename, html)
 
