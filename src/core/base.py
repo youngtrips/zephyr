@@ -25,7 +25,8 @@ def create_file(fullfilename, content):
     dirname = os.path.dirname(fullfilename)
     if not os.path.exists(dirname):
         os.makedirs(dirname)
-    logging.info('generate file: %s' % fullfilename)
+    #logging.info('generate file: %s' % fullfilename)
+    print 'generate file: %s' % (fullfilename)
     handle = open(fullfilename, 'w')
     handle.write(content)
     handle.close()
