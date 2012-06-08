@@ -23,7 +23,8 @@ class Category(base.Node):
 
     def generate(self):
         self.posts.sort()
-        base_url = self.url + "/page"
+        base_url = self.url + "page"
+        print base_url
         pageination = page.Pageination(base_url, len(self.posts),
                                        self.parent.pagelimit)
         for cur_page_id in range(1, pageination.pages + 1):
