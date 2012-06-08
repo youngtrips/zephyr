@@ -7,6 +7,7 @@
 #
 
 import logging
+import os
 
 class Node(object):
     def __init__(self, path, parent):

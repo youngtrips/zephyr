@@ -6,8 +6,11 @@
 # Description: 
 #
 
+import base
+import os
+
 class Pageination:
-    def __init__(self, total_post, page_limit):
+    def __init__(self, base_url, total_post, page_limit):
         self.total_post = total_post
         self.page_limit = page_limit
         if self.page_limit <= 0:
@@ -15,7 +18,12 @@ class Pageination:
         ceil = lambda x, y : (x / y) + ((x % y) > 0)
         self.total_page = ceil(total_post, page_limit)
         self.current_page = 1
+        self.base_url = base_url
     
+    @property
+    def pages(self):
+        return self.total_page
+
     def set_current_page(self, curr):
         self.current_page = curr
 
@@ -36,13 +44,14 @@ class Pageination:
         to = min(self.total_page, self.current_page + split_page)
 
         # prev page
-        html = ""
+        html = "<ul class='pages'>"
         if self.current_page > 1:
-            html += "<li><a href='prev' href='#'>" + prev_word + "</a></li>"
+            html += "<li><a href='%s/%d/'>" % (self.base_url, self.current_page - 1)
+            html += prev_word + "</a></li>"
 
         # first page
         if fr > 1:
-            html += "<li><a href='#'>1</a></li>"
+            html += "<li><a href='%s/%d/'>1</a></li>" % (self.base_url, 1)
             if fr > 2:
                 html += "<li>" + split_word + "</li>"
 
@@ -52,17 +61,21 @@ class Pageination:
                 html += "<li class='current'>"
             else:
                 html += "<li>"
-            html += "<a href='#'>" + str(i) + "</a></li>"
+            html += "<a href='%s/%d/'>" % (self.base_url, i)
+            html += str(i) + "</a></li>"
 
         # last page
         if to < self.total_page:
             if to < self.total_page - 1:
                 html += "<li>" + split_word + "<li>"
-            html += "<li><a href='#'>" + str(self.total_page) + "</a></li>"
+            html += "<li><a href='%s/%d/'>" % (self.base_url, self.total_page)
+            html += str(self.total_page) + "</a></li>"
         # next page
 
         if self.current_page < self.total_page:
-            html += "<li><a href='next' href='#'>" + next_word + "</a></li>"
+            html += "<li><a href='%s/%d/'>" % (self.base_url, self.current_page + 1)
+            html += next_word + "</a></li>"
+        html += "</ul>"
 
         return html
 
@@ -74,10 +87,10 @@ class Page(base.Node):
         self.title = title
         self.posts = [site.posts[i] for i in post_idx_list]
         self.cur_page_id = cur_page_id
-        self.cur_page_nav = self.page_nav
+        self.cur_page_nav = cur_page_nav
 
     @property
-    def navigator(self):
+    def pagenavigator(self):
         return self.cur_page_nav
 
     def generate(self):

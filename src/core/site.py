@@ -6,9 +6,28 @@
 # Description: 
 #
 
-class Site(Node):
+from mako.template import Template
+from mako.lookup import TemplateLookup
+import markdown
+import shutil
+import yaml
+import page
+import base
+from post import Post
+from category import Category
+import sys
+import os
+
+BIN_PATH = os.path.dirname(sys.argv[0])
+
+def load_config(conf):
+    import imp
+    obj = imp.load_source('config', conf)
+    return obj
+
+class Site(base.Node):
     def __init__(self, path):
-        Node.__init__(self, '', None)
+        base.Node.__init__(self, '', None)
         self.path = path
         conf = os.path.join(self.path, '.zephyr', 'config.py')
         self.config = load_config(conf)
@@ -135,17 +154,28 @@ class Site(Node):
         cate.add_post(post)
 
     def _generate_index(self):
-        filename = os.path.join(self.path, '.zephyr', 'html', 'index.html')
-        layout = self.layout_lookup.get_template('page.html')
-        class Foo:
-            pass
-        page = Foo()
-        page.name = 'Home'
-        page.title = 'Home'
-        page.url = self.url
+        self._generate_post_list()
+        index = os.path.join(self.path, '.zephyr', 'html', 'index.html')
+        firstpage = os.path.join(self.path, '.zephyr', 'html', 'page', '1',
+                                 'index.html')
+        shutil.copy(firstpage, index)
 
-        cmpfunc = lambda p1, p2 : cmp(p2.timestamp, p1.timestamp)
-        self.posts.sort(cmp=cmpfunc)
-        html = layout.render(site=self, page=page)
-        create_file(filename, html)
+    def _generate_post_list(self):
+        self.posts.sort()
+        base_url = self.url + "/page"
+        pageination = page.Pageination(base_url, len(self.posts), self.pagelimit)
+        for cur_page_id in range(1, pageination.pages + 1):
+            pageination.set_current_page(cur_page_id)
+            post_idx_list = pageination.get_current_page_posts()
+            cur_page_nav = pageination.render()
+            self._generate_postlist_page(cur_page_id, cur_page_nav, post_idx_list)
+
+
+    def _generate_postlist_page(self, cur_page_id, cur_page_nav,
+                                post_idx_list):
+        title = 'Home'
+        url = os.path.join('page', str(cur_page_id))
+        cur_page = page.Page(self, title, url, post_idx_list,
+                             cur_page_id, cur_page_nav)
+        cur_page.generate()
 

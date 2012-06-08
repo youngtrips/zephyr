@@ -11,6 +11,7 @@ import logging
 import yaml
 import time
 import base
+import os
 
 class Post(base.Node):
     def __init__(self, site, title, publish_datetime,
