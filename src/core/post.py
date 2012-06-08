@@ -6,12 +6,16 @@
 # Description: 
 #
 
+import markdown
+import logging
+import yaml
+import time
 import base
 
 class Post(base.Node):
     def __init__(self, site, title, publish_datetime,
-                 content, author, url, layout='post',
-                 category='default', tags=[],
+                 content, author, url, category='default',
+                 tags=[], layout=None,
                  enable_comment=True):
         base.Node.__init__(self, url, site)
         self.title = title
@@ -36,10 +40,7 @@ class Post(base.Node):
         return cmp(other.timestamp, self.timestamp)
 
     def __str__(self):
-        return 'post<title=%s>' % self.title
-
-    def set_url(self, url):
-        self.url = url
+        return 'post<title=%s, timestamp=%d>' % (self.title, self.timestamp)
 
     def _render(self):
         class Foo:
@@ -54,8 +55,11 @@ class Post(base.Node):
         html = self._render()
 
         #generate html file
-        html_file = os.path.join(self.parent.path, '.zephyr', 'html',
-                                    self.path, 'index.html')
+        html_file = os.path.join(self.parent.path,
+                                 '.zephyr',
+                                 'html',
+                                 self.path,
+                                 'index.html')
         return base.create_file(html_file, html)
 
     @staticmethod
@@ -69,6 +73,7 @@ class Post(base.Node):
             content = handle.read()
             handle.close()
         except:
+            logging.info('open file[%s] failed.' % fullname)
             return None
         HEADER_SEP = '---\n'
 
@@ -113,17 +118,17 @@ class Post(base.Node):
             tags = header['tags']
 
         enable_comment = True
-        if header.get('comment'):
-            enable_comment = header['comment']
+        if header.get('comments'):
+            enable_comment = header['comments']
 
         author = site.author
-        url = 'blog/' + '/'.join(date.split('-')) + '/' + postfilename
+        url = os.path.join('blog', '/'.join(date.split('-')), postfilename)
 
         content = markdown.markdown(content)
-        layout = site.layout_lookup.get_template('post.html')
-
-        post = Post(site, title, date, timeval, content, author, layout, url,
-                    category, tags, enable_comment)
+        post = Post(site, title, date + ' '+ timeval,
+                    content, author, url,
+                    category, tags, layout,
+                    enable_comment)
         post.timestamp = timestamp
         return post
 

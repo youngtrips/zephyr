@@ -67,6 +67,26 @@ class Pageination:
         return html
 
 
+class Page(base.Node):
+    def __init__(self, site, title, url, post_idx_list,
+                 cur_page_id, cur_page_nav):
+        base.Node.__init__(self, url, site)
+        self.title = title
+        self.posts = [site.posts[i] for i in post_idx_list]
+        self.cur_page_id = cur_page_id
+        self.cur_page_nav = self.page_nav
+
+    @property
+    def navigator(self):
+        return self.cur_page_nav
+
+    def generate(self):
+        layout = self.parent.layout_lookup.get_template('post_list.html')
+        html = layout.render(site=self.parent, page=self)
+        filename = os.path.join(self.parent.path, '.zephyr', 'html',
+                                self.path, 'index.html')
+        base.create_file(filename, html)
+
 if __name__ == "__main__":
     pageination = Pageination(34, 5)
     #print pageination.render()
@@ -78,5 +98,4 @@ if __name__ == "__main__":
 
     pageination.set_current_page(3)
     print pageination.get_current_page_posts()
-
 
