@@ -96,6 +96,6 @@ def publish(path):
     print 'start publish:'
     print 'generate html file......'
     mysite.publish()
-    #print 'start rsync site:'
-    #rsync_site(mysite)
+    print 'start rsync site:'
+    rsync_site(mysite)
 
