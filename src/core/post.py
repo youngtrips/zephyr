@@ -46,11 +46,11 @@ class Post(base.Node):
     def _render(self):
         class Foo:
             pass
-        page = Foo()
-        page.title = self.title
-        page.name = self.title
-        page.url = self.url
-        return self.layout.render(site=self.parent,page=page,post=self)
+        cur_page = Foo()
+        cur_page.title = self.title
+        cur_page.name = self.title
+        cur_page.url = self.url
+        return self.layout.render(site=self.parent,page=cur_page,post=self)
 
     def generate(self):
         html = self._render()

@@ -67,13 +67,14 @@ class Site(base.Node):
         for post in self.posts:
             if post:
                 post.generate()
+
         for name, cate in self.categories.iteritems():
             if cate:
                 cate.generate()
 
-        for page in self.pages:
-            if page:
-                page.generate()
+        for custom_page in self.pages:
+            if custom_page:
+                custom_page.generate()
 
         self._generate_index()
 
@@ -138,9 +139,9 @@ class Site(base.Node):
                 self._parse_page(shortname, fullname)
 
     def _parse_page(self, shortname, fullname):
-        page = Page.parse(self, shortname, fullname)
-        if page:
-            self.pages.append(page)
+        custompage = page.CustomPage.parse(self, shortname, fullname)
+        if custompage:
+            self.pages.append(custompage)
 
     def _add_post(self, post):
         self.posts.append(post)

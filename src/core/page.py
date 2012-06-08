@@ -7,6 +7,8 @@
 #
 
 import base
+import markdown
+import yaml
 import os
 
 class Pageination:
@@ -99,6 +101,63 @@ class Page(base.Node):
         filename = os.path.join(self.parent.path, '.zephyr', 'html',
                                 self.path, 'index.html')
         base.create_file(filename, html)
+
+
+
+class CustomPage(base.Node):
+    def __init__(self, site, name, title, content, path, layout):
+        base.Node.__init__(self, path, site)
+        self.name = name
+        self.content = content
+        self.title = title
+        self.layout = layout
+
+    def generate(self):
+        layout = self.parent.layout_lookup.get_template(self.layout + '.html')
+        html = layout.render(site=self.parent, page=self)
+        pagefile = os.path.join(self.parent.path, '.zephyr', 'html',
+                                self.path, 'index.html')
+        base.create_file(pagefile, html)
+
+    @staticmethod
+    def parse(site, shortname, fullname):
+        if not os.path.exists(fullname):
+            return None
+        content = ''
+        try:
+            import codecs
+            handle = codecs.open(fullname, mode="r", encoding="utf-8")
+            content = handle.read()
+            handle.close()
+        except:
+            return None
+        HEADER_SEP = '---\n'
+
+        pos = content.find(HEADER_SEP) + len(HEADER_SEP)
+        if pos < 0:
+            print 'Invalid post file(%s)' % (fullname)
+            return None
+        content = content[pos:]
+        pos = content.find(HEADER_SEP)
+        if pos < 0:
+            print 'Invalid post file(%s)' % (fullname)
+            return None
+        header = content[0:pos]
+        content = content[pos + len(HEADER_SEP):]
+        header = yaml.load(header)
+        content = markdown.markdown(content)
+
+        path = os.path.splitext(shortname)[0]
+        title = path
+        if header.get('title'):
+            title = header['title']
+        layout = 'page'
+        if header.get('layout'):
+            layout = header['layout']
+        name = title
+
+        page = CustomPage(site, name, title, content, path, layout)
+        return page
 
 if __name__ == "__main__":
     pageination = Pageination(34, 5)
