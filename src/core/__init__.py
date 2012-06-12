@@ -11,6 +11,13 @@ import time
 import sys
 import os
 
+
+
+ZEPHYR_BIN_DIR = "ZEPHYR_BIN_DIR"
+ZEPHYR_WORK_DIR = "ZEPHYR_WORK_DIR"
+ZEPHYR_THEME_DIR = "ZEPHYR_THEME_DIR"
+ZEPHYR_CONFIG_DIR = "ZEPHYR_CONFIG_DIR"
+
 BIN_PATH = os.path.dirname(sys.argv[0])
 
 def init_sketch_path(path):
