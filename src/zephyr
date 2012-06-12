@@ -28,17 +28,10 @@ class Zephyr(cmdln.Cmdln):
         cmdln.Cmdln.__init__(self, *args, **kwargs)
         cmdln.Cmdln.do_help.aliases.append("h")
 
-        print sys.argv[0]
-        #os.environ['ZEPHYR_BIN_DIR'] = os.path.basename(sys.argv[0])
-
-        print 'bin:[%s]' % (os.path.basename(sys.argv[0]))
-
-        """
+        os.environ['ZEPHYR_BIN_DIR'] = os.path.abspath(os.path.dirname(sys.argv[0]))
         os.environ['ZEPHYR_THEME_DIR'] = os.path.join(os.getenv('ZEPHYR_BIN_DIR'), 'themes')
         os.environ['ZEPHYR_WORK_DIR']  =  os.getcwd()
         os.environ['ZEPHYR_CONFIG_DIR'] = os.path.join(os.getenv('ZEPHYR_WORK_DIR', '.zephyr'))
-        """
-
 
     @cmdln.option("-t", "--theme",
                   help="choose a theme for blog")
@@ -120,8 +113,8 @@ class Zephyr(cmdln.Cmdln):
 
 if __name__ == "__main__":
     zephyr = Zephyr()
-    #print os.getenv('ZEPHYR_WORK_DIR')
-    #print os.getenv('ZEPHYR_THEME_DIR')
+    print os.getenv('ZEPHYR_BIN_DIR')
+    print os.getenv('ZEPHYR_THEME_DIR')
 
     sys.exit(zephyr.main())
 
