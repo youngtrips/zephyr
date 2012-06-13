@@ -5,45 +5,112 @@
 
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="assets/css/docs.css" rel="stylesheet">
     <link href="assets/js/google-code-prettify/prettify.css" rel="stylesheet">
 
     <title>Hello BootStrap</title>
   </head>
   <body>
 
-<div class=container">
-    <div class="page-header">
-        <h1>MindEden</h1>
-    </div>
+    <div id="header" class="container">
+        <!--
+        <div class="page-header">
+        -->
+        <div><img src="assets/mindeden-logo.png"></div>
     <div class="navbar">
         <div class="navbar-inner">
             <div class="container">
+                <!--
                 <a class="brand" href="#">Project name</a>
+                -->
                 <ul class="nav">
                     <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
+                    <li><a href="#">About</a></li>
                 </ul>
             </div>
         </div>
     </div>
-</div>
+
+    </div>
 
 
     <div class="container">
 
         <div class="row-fluid">
 
-            <div class="span12">
-            </div>
-
-            <div class="span10">
+            <div class="span9">
                 <!--body content-->
-                <pre class="prettyprint linenums">&lt;p&gt;Sample text here...&lt;/p&gt; </pre>
+	
+                <article id="post-166" class="post-166 post type-post status-publish format-standard hentry category-uncategorized" role="article">
+                    <header class="entry-header">
+                        <h2 class="entry-title">
+                            <a href="#" title="" rel="bookmark">Latest Post is right here</a>
+                        </h2>
+                        <div class="entry-meta">
+                            <span class="meta-prep meta-prep-author">Posted on </span>
+                                <a href="#" rel="bookmark"><time class="entry-date" datetime="2011-12-15T02:25:46+00:00" pubdate>December 15, 2011</time></a>
+                            <span class="meta-sep">|
+                            <span class="label">Category: <a href='#'>default</a></span>
+                        </div><!-- .entry-meta -->
+		            </header><!-- .entry-header -->
+
+				    <div class="entry-content">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ultricies laoreet quam, eget egestas nisl venenatis ac.
+                        Aenean tempor metus sed tortor interdum in tempor sem commodo. Vestibulum consectetur, turpis quis scelerisque euismod,
+                        ligula tellus cursus mauris, et dictum diam justo sed felis. Maecenas at massa lacus, eu pretium mi.
+                        Vestibulum eu pharetra orci. Nunc aliquet, nulla ac cursus sagittis, ipsum augue laoreet nulla,
+                        et eleifend tortor leo sit amet dolor. Sed auctor vulputate sem, non facilisis libero vulputate a.<p> 
+                    <a href="#" class="btn btn-primary">Continue reading <span class="meta-nav">&rarr;</span></a></p>
+					</div><!-- .entry-content -->
+    	        </article><!-- #post-166 -->
+
+
+                <div class="pagination">
+                    <ul>
+                        <li><a href="#">Prev</a></li>
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">Next</a></li>
+                    </ul>
+                </div>
+
+            </div> <!-- end main content -->
+
+            <div class="span3">
+                <!--sidber content-->
+                <div class="well">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="nav-header">Categories</li>
+                        <li class="active"><a href='#'>Linux</a></li>
+                        <li class=""><a href='#'>python</a></li>
+                    </ul>
+                </div>
+
+                <div class="well">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="nav-header">Archives</li>
+                        <li class=""><a href='#'>Jun 2012(2)</a></li>
+                        <li class=""><a href='#'>May 2012(2)</a></li>
+                    </ul>
+                </div>
+
+                <div class="well">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="nav-header">Links</li>
+                        <li class=""><a href='#'>Linux</a></li>
+                        <li class=""><a href='#'>python</a></li>
+                    </ul>
+                </div>
+ 
             </div>
 
         </div>
+
+        <hr>
+        <footer class="footer">
+            <p>© 2012 MindEden. All Rights Reserved.</p>
+        </footer>
     </div>
 
   </body>
