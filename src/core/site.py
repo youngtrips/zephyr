@@ -101,7 +101,6 @@ class Site(base.Node):
         if os.path.exists(dst_stylesheets):
             shutil.rmtree(dst_stylesheets)
 
-        """
         shutil.copytree(src_stylesheets, dst_stylesheets)
 
         # copy theme's images
@@ -112,7 +111,6 @@ class Site(base.Node):
         if os.path.exists(dst_images):
             shutil.rmtree(dst_images)
         shutil.copytree(src_images, dst_images)
-        """
 
         # copy assets path
         src_assets = os.path.join(self.path, 'assets')
