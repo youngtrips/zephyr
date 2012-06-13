@@ -1,17 +1,17 @@
-<%include file="header.html"/>
+<%include file="header.html" />
+<div class="container">
+    <div class="row-fluid">
+        <div class="span9">
+        <!--body content-->
+            ${self.body()}
+        </div> <!-- end main content -->
 
-<div id="content" class="span-24">
+        <div class="span3">
+        <!--sidber content-->
+            <%include file="sidebar.html" />
+        </div>
 
-	<div class="span-18">
-        ${self.body()}
     </div>
-
-	<div class="span-6 last">
-		<div id="sidebar">
-        <%include file="sidebar.html"/>
-		</div><!-- end #sidebar -->
-	</div>
 </div>
-
-<%include file="footer.html"/>
+<%include file="footer.html" />
 

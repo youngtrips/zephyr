@@ -1,0 +1,19 @@
+<div class="well sidebar-nav">
+    <ul class="nav nav-list">
+        <li class="nav-header">Categories</li>
+        % for key, cate in site.categories.iteritems():
+            <li class=""><a href='${cate.url}'>${cate.name}</a></li>
+        % endfor
+    </ul>
+</div>
+
+
+<div class="well sidebar-nav">
+    <ul class="nav nav-list">
+        <li class="nav-header">Links</li>
+        % for title, url in site.config.LINKS.iteritems():
+            <li class=""><a href='${url}'>${title}</a></li>
+        % endfor
+    </ul>
+</div>
+

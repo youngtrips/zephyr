@@ -1,0 +1,37 @@
+<%inherit file="base.html" />
+
+% for post in page.posts:
+<article role="article">
+    <header class="entry-header">
+    <h2 class="entry-title">
+        <a href="${post.url}" rel="bookmark">${post.title}</a>
+    </h2>
+    <div class="entry-meta">
+        <span class="label">Publish: ${post.datetime}</span>
+        <span class="label">Category: <a href='${post.cate.url}'>${post.cate.name}</a></span>
+    </div><!-- .entry-meta -->
+    </header><!-- .entry-header -->
+
+	<div class="entry-content">
+        ${post.content | truncate_html}
+        <p><a href="${post.url}" class="btn btn-primary">Continue reading <span class="meta-nav">&rarr;</span></a></p>
+	</div><!-- .entry-content -->
+</article>
+<hr>
+% endfor
+
+
+${ page.pagenavigator }
+<!--
+                <div class="pagination">
+                    <ul>
+                        <li><a href="#">Prev</a></li>
+                        <li class="active"><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">Next</a></li>
+                    </ul>
+                </div>
+-->
+

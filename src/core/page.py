@@ -46,7 +46,7 @@ class Pageination:
         to = min(self.total_page, self.current_page + split_page)
 
         # prev page
-        html = "<ul class='pages'>"
+        html = "<ul class='pages pagination'>"
         if self.current_page > 1:
             html += "<li><a href='%s/%d/'>" % (self.base_url, self.current_page - 1)
             html += prev_word + "</a></li>"
@@ -60,7 +60,7 @@ class Pageination:
         # internal pages
         for i in range(fr, to + 1):
             if i == self.current_page:
-                html += "<li class='current'>"
+                html += "<li class='current active'>"
             else:
                 html += "<li>"
             html += "<a href='%s/%d/'>" % (self.base_url, i)
