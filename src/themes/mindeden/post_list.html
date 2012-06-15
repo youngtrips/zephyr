@@ -1,6 +1,7 @@
 <%inherit file="base.html" />
 
 % for post in page.posts:
+<blockquote>
 <article role="article">
     <header class="entry-header">
     <h2 class="entry-title">
@@ -17,6 +18,7 @@
         <p><a href="${post.url}" class="btn btn-primary">Continue reading <span class="meta-nav">&rarr;</span></a></p>
 	</div><!-- .entry-content -->
 </article>
+</blockquote>
 <hr>
 % endfor
 
