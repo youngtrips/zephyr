@@ -160,14 +160,16 @@ class CustomPage(base.Node):
         return page
 
 if __name__ == "__main__":
-    pageination = Pageination(34, 5)
+    pageination = Pageination('/',34, 5)
     #print pageination.render()
     pageination.set_current_page(1)
-    print pageination.get_current_page_posts()
+    print pageination.render()
 
     pageination.set_current_page(2)
     print pageination.get_current_page_posts()
+    print pageination.render()
 
     pageination.set_current_page(3)
     print pageination.get_current_page_posts()
+    print pageination.render()
 
